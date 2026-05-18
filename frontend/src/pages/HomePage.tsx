@@ -137,65 +137,6 @@ function HomePage() {
         </div>
       </section>
 
-      {/* FOOTER */}
-      <footer className="bg-[#5C3D2E] border-t border-[#C9922A]/30 py-16 px-6">
-        <div className="max-w-6xl mx-auto grid grid-cols-3 gap-12 mb-12">
-
-          {/* LOGO Y DESCRIPCIÓN */}
-          <div>
-            <img src="/Logo.png" alt="Artesanía Albaicín" className="h-24 object-contain mb-4" />
-            <p className="text-white/50 text-sm leading-relaxed">
-              Artesanía tradicional del Albaicín. Granada, España.
-            </p>
-          </div>
-
-          {/* NAVEGACIÓN */}
-          <div>
-            <h4 className="text-[#E8C46A] text-xs uppercase tracking-widest mb-6">Navegación</h4>
-            <ul className="flex flex-col gap-3">
-              <li><a href="/" className="text-white/50 text-sm hover:text-white transition-colors">Inicio</a></li>
-              <li><a href="/catalogo" className="text-white/50 text-sm hover:text-white transition-colors">Catálogo</a></li>
-              <li><a href="/nosotros" className="text-white/50 text-sm hover:text-white transition-colors">Nosotros</a></li>
-              <li><a href="/contacto" className="text-white/50 text-sm hover:text-white transition-colors">Contacto</a></li>
-            </ul>
-          </div>
-
-          {/* UBICACIÓN Y HORARIO */}
-          <div>
-            <h4 className="text-[#E8C46A] text-xs uppercase tracking-widest mb-6">Visítanos</h4>
-            <ul className="flex flex-col gap-4">
-              <li>
-                <p className="text-white/30 text-xs uppercase tracking-widest mb-1">Dirección</p>
-                <p className="text-white/70 text-sm">Calle Calderería Nueva<br />Albaicín, Granada, España</p>
-              </li>
-              <li>
-                <p className="text-white/30 text-xs uppercase tracking-widest mb-1">Horario</p>
-                <p className="text-white/70 text-sm">Lunes — Domingo<br />9:30 — 00:00</p>
-              </li>
-            </ul>
-          </div>
-
-        </div>
-
-        {/* MAPA */}
-        <div className="max-w-6xl mx-auto mb-12">
-          <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3178.940025219255!2d-3.5994088240038677!3d37.177896246317815!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd71fcbf4fcbdc81%3A0x511a6013ba4beea4!2sC.%20Calderer%C3%ADa%20Nueva%2C%20Albaic%C3%ADn%2C%2018010%20Granada%2C%20Espa%C3%B1a!5e0!3m2!1ses!2sma!4v1779105310667!5m2!1ses!2sma"
-            width="100%"
-            height="280"
-            style={{ border: 0 }}
-            allowFullScreen
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-          />
-        </div>
-
-        {/* COPYRIGHT */}
-        <div className="max-w-6xl mx-auto pt-8 border-t border-[#C9922A]/20 text-center">
-          <p className="text-white/30 text-xs">© 2025 Artesanía Albaicín · Todos los derechos reservados · Granada, España</p>
-        </div>
-      </footer>
-
     </main>
   )
 }

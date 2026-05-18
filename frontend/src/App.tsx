@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Toaster } from 'react-hot-toast'
 import Header from './components/Header.tsx'
+import Footer from './components/Footer'
 import HomePage from './pages/HomePage'
 import CatalogoPage from './pages/CatalogoPage'
 import ProductoPage from './pages/ProductoPage'
@@ -24,6 +25,7 @@ function App() {
           <Route path="/contacto" element={<ContactoPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
+        <Footer />
       </BrowserRouter>
       <Toaster position="top-right" />
     </QueryClientProvider>
