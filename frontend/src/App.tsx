@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Toaster } from 'react-hot-toast'
 import Header from './components/Header.tsx'
 import HomePage from './pages/HomePage'
+import CatalogoPage from './pages/CatalogoPage'
 
 const queryClient = new QueryClient()
 
@@ -13,7 +14,7 @@ function App() {
         <Header />
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/catalogo" element={<div>Catálogo</div>} />
+          <Route path="/catalogo" element={<CatalogoPage />} />
           <Route path="/producto/:id" element={<div>Detalle producto</div>} />
           <Route path="/nosotros" element={<div>Nosotros</div>} />
           <Route path="/contacto" element={<div>Contacto</div>} />
