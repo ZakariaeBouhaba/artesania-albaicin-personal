@@ -4,6 +4,10 @@ import { Toaster } from 'react-hot-toast'
 import Header from './components/Header.tsx'
 import HomePage from './pages/HomePage'
 import CatalogoPage from './pages/CatalogoPage'
+import ProductoPage from './pages/ProductoPage'
+import NosotrosPage from './pages/NosotrosPage'
+import ContactoPage from './pages/ContactoPage'
+import NotFoundPage from './pages/NotFoundPage'
 
 const queryClient = new QueryClient()
 
@@ -15,9 +19,10 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/catalogo" element={<CatalogoPage />} />
-          <Route path="/producto/:id" element={<div>Detalle producto</div>} />
-          <Route path="/nosotros" element={<div>Nosotros</div>} />
-          <Route path="/contacto" element={<div>Contacto</div>} />
+          <Route path="/producto/:id" element={<ProductoPage />} />
+          <Route path="/nosotros" element={<NosotrosPage />} />
+          <Route path="/contacto" element={<ContactoPage />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>
       <Toaster position="top-right" />
