@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from database import get_db
 import models
@@ -49,13 +49,13 @@ def get_admin_user(current_user: models.Usuario = Depends(get_current_user)):
     return current_user
 
 @router.post("/login", response_model=schemas.TokenSchema)
-def login(datos: schemas.LoginSchema, db: Session = Depends(get_db)):
+def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     usuario = db.query(models.Usuario).filter(
-        models.Usuario.email == datos.email
+        models.Usuario.email == form_data.username
     ).first()
 
     if not usuario or not bcrypt.checkpw(
-        datos.contrasena.encode('utf-8'),
+        form_data.password.encode('utf-8'),
         usuario.contrasena.encode('utf-8')
     ):
         raise HTTPException(
