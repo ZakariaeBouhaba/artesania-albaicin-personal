@@ -66,8 +66,12 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
     token = crear_token({"sub": usuario.email, "rol": usuario.rol, "id": usuario.id})
     return {"access_token": token, "token_type": "bearer"}
 
-@router.post("/crear-admin", response_model=schemas.UsuarioResponse)
-def crear_admin(usuario: schemas.UsuarioCreate, db: Session = Depends(get_db)):
+@router.post("/crear-usuario", response_model=schemas.UsuarioResponse)
+def crear_usuario(
+    usuario: schemas.UsuarioCreate,
+    db: Session = Depends(get_db),
+    current_user: models.Usuario = Depends(get_admin_user)
+):
     existe = db.query(models.Usuario).filter(
         models.Usuario.email == usuario.email
     ).first()
