@@ -5,10 +5,25 @@ import { getCategorias } from '../services/categorias'
 import { Plus, Pencil, Trash2, Upload } from 'lucide-react'
 import type { Producto } from '../types'
 
+const MATERIALES = [
+  'Cuero vaca',
+  'Cuero marroquí',
+  'Alpaca plateada',
+  'Acero inoxidable',
+  'Plata de ley',
+  'Cerámica',
+  'Madera',
+  'Cristal',
+  'Hierro fundido',
+  'Tela / Textil',
+  'Otro'
+]
+
 function ProductosPage() {
   const queryClient = useQueryClient()
   const [mostrarFormulario, setMostrarFormulario] = useState(false)
   const [productoEditando, setProductoEditando] = useState<Producto | null>(null)
+  const [materialPersonalizado, setMaterialPersonalizado] = useState('')
   const [formData, setFormData] = useState({
     nombre: '',
     descripcion: '',
@@ -77,6 +92,7 @@ function ProductosPage() {
   const cerrarFormulario = () => {
     setMostrarFormulario(false)
     setProductoEditando(null)
+    setMaterialPersonalizado('')
     setFormData({
       nombre: '',
       descripcion: '',
@@ -91,25 +107,43 @@ function ProductosPage() {
 
   const abrirEditar = (producto: Producto) => {
     setProductoEditando(producto)
-    setFormData({
-      nombre: producto.nombre,
-      descripcion: producto.descripcion,
-      origen: producto.origen,
-      material: producto.material,
-      hecho_a_mano: producto.hecho_a_mano,
-      categoria_id: producto.categoria_id,
-      imagen_url: producto.imagen_url,
-      estado: producto.estado
-    })
+    const esMaterialLista = MATERIALES.includes(producto.material)
+    if (!esMaterialLista && producto.material) {
+      setMaterialPersonalizado(producto.material)
+      setFormData({
+        nombre: producto.nombre,
+        descripcion: producto.descripcion,
+        origen: producto.origen,
+        material: 'Otro',
+        hecho_a_mano: producto.hecho_a_mano,
+        categoria_id: producto.categoria_id,
+        imagen_url: producto.imagen_url,
+        estado: producto.estado
+      })
+    } else {
+      setMaterialPersonalizado('')
+      setFormData({
+        nombre: producto.nombre,
+        descripcion: producto.descripcion,
+        origen: producto.origen,
+        material: producto.material,
+        hecho_a_mano: producto.hecho_a_mano,
+        categoria_id: producto.categoria_id,
+        imagen_url: producto.imagen_url,
+        estado: producto.estado
+      })
+    }
     setMostrarFormulario(true)
   }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    const materialFinal = formData.material === 'Otro' ? materialPersonalizado : formData.material
+    const datos = { ...formData, material: materialFinal }
     if (productoEditando) {
-      updateMutation.mutate({ id: productoEditando.id, data: formData })
+      updateMutation.mutate({ id: productoEditando.id, data: datos })
     } else {
-      createMutation.mutate(formData)
+      createMutation.mutate(datos)
     }
   }
 
@@ -191,13 +225,29 @@ function ProductosPage() {
                 </div>
                 <div className="flex flex-col gap-2">
                   <label className="text-[#C9922A] text-xs uppercase tracking-widest">Material</label>
-                  <input
-                    type="text"
+                  <select
                     value={formData.material}
-                    onChange={(e) => setFormData({ ...formData, material: e.target.value })}
-                    placeholder="Cerámica, Cuero..."
+                    onChange={(e) => {
+                      setFormData({ ...formData, material: e.target.value })
+                      if (e.target.value !== 'Otro') setMaterialPersonalizado('')
+                    }}
                     className="border border-[#F0E0B8] px-4 py-3 text-[#5C3D2E] text-sm outline-none focus:border-[#C9922A]"
-                  />
+                  >
+                    <option value="">— Selecciona —</option>
+                    {MATERIALES.map((m) => (
+                      <option key={m} value={m}>{m}</option>
+                    ))}
+                  </select>
+                  {formData.material === 'Otro' && (
+                    <input
+                      type="text"
+                      value={materialPersonalizado}
+                      onChange={(e) => setMaterialPersonalizado(e.target.value)}
+                      required
+                      placeholder="Escribe el material..."
+                      className="border border-[#F0E0B8] px-4 py-3 text-[#5C3D2E] text-sm outline-none focus:border-[#C9922A] mt-2"
+                    />
+                  )}
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
@@ -275,7 +325,6 @@ function ProductosPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {productos.map((producto) => (
             <div key={producto.id} className="bg-white border border-[#F0E0B8] overflow-hidden">
-              {/* IMAGEN */}
               <div className="relative aspect-square bg-[#FDF8F0]">
                 {producto.imagen_url ? (
                   <img
@@ -288,7 +337,6 @@ function ProductosPage() {
                     Sin imagen
                   </div>
                 )}
-                {/* SUBIR IMAGEN */}
                 <label className="absolute bottom-2 right-2 bg-white border border-[#C9922A] text-[#C9922A] p-2 cursor-pointer hover:bg-[#C9922A] hover:text-white transition-colors">
                   <Upload size={14} />
                   <input
@@ -299,8 +347,6 @@ function ProductosPage() {
                   />
                 </label>
               </div>
-
-              {/* INFO */}
               <div className="p-4">
                 <div className="flex items-start justify-between gap-2 mb-2">
                   <h3 className="font-serif text-[#5C3D2E] text-lg leading-tight">{producto.nombre}</h3>
@@ -309,8 +355,6 @@ function ProductosPage() {
                   </span>
                 </div>
                 <p className="text-[#8B7355] text-xs mb-3">{producto.categoria?.nombre}</p>
-
-                {/* CAMBIAR ESTADO RÁPIDO */}
                 <select
                   value={producto.estado}
                   onChange={(e) => updateEstadoMutation.mutate({ id: producto.id, estado: e.target.value })}
@@ -320,8 +364,6 @@ function ProductosPage() {
                   <option value="agotado">❌ Agotado</option>
                   <option value="bajo_pedido">📦 Bajo pedido</option>
                 </select>
-
-                {/* ACCIONES */}
                 <div className="flex gap-2">
                   <button
                     onClick={() => abrirEditar(producto)}
