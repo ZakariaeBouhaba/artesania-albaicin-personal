@@ -1,11 +1,31 @@
 import { useParams, Link } from 'react-router-dom'
-import { productos } from '../data/productos'
+import { useQuery } from '@tanstack/react-query'
+import { getProducto } from '../services/productos'
 
 function ProductoPage() {
   const { id } = useParams()
-  const producto = productos.find(p => p.id === Number(id))
 
-  if (!producto) {
+  const { data: producto, isLoading, isError } = useQuery({
+    queryKey: ['producto', id],
+    queryFn: () => getProducto(Number(id))
+  })
+
+  if (isLoading) {
+    return (
+      <main className="bg-[#FDF8F0] min-h-screen">
+        <section className="max-w-6xl mx-auto px-6 py-16 grid grid-cols-2 gap-16">
+          <div className="bg-[#F0E0B8] animate-pulse aspect-square" />
+          <div className="flex flex-col gap-4">
+            <div className="bg-[#F0E0B8] animate-pulse h-8 w-32" />
+            <div className="bg-[#F0E0B8] animate-pulse h-16 w-full" />
+            <div className="bg-[#F0E0B8] animate-pulse h-24 w-full" />
+          </div>
+        </section>
+      </main>
+    )
+  }
+
+  if (isError || !producto) {
     return (
       <main className="bg-[#FDF8F0] min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -47,7 +67,7 @@ function ProductoPage() {
         {/* INFO */}
         <div>
           <span className="text-[#C9922A] text-xs uppercase tracking-widest mb-3 block">
-            {producto.categoria}
+            {producto.categoria?.nombre}
           </span>
           <h1 className="font-serif text-[#5C3D2E] text-5xl leading-none mb-6">
             {producto.nombre}
@@ -69,7 +89,7 @@ function ProductoPage() {
             </div>
             <div className="flex items-center gap-4 py-4 border-b border-[#F0E0B8]">
               <span className="text-[#C9922A] text-xs uppercase tracking-widest w-24">Categoría</span>
-              <span className="text-[#5C3D2E] text-sm">{producto.categoria}</span>
+              <span className="text-[#5C3D2E] text-sm">{producto.categoria?.nombre}</span>
             </div>
             {producto.hecho_a_mano && (
               <div className="flex items-center gap-4 py-4 border-b border-[#F0E0B8]">
@@ -79,9 +99,21 @@ function ProductoPage() {
                 </span>
               </div>
             )}
+            <div className="flex items-center gap-4 py-4 border-b border-[#F0E0B8]">
+              <span className="text-[#C9922A] text-xs uppercase tracking-widest w-24">Estado</span>
+              <span className={`text-xs uppercase tracking-widest px-3 py-1 border ${
+                producto.estado === 'disponible'
+                  ? 'border-green-600 text-green-600'
+                  : producto.estado === 'agotado'
+                  ? 'border-red-600 text-red-600'
+                  : 'border-[#C9922A] text-[#C9922A]'
+              }`}>
+                {producto.estado === 'disponible' ? '✅ Disponible' : producto.estado === 'agotado' ? '❌ Agotado' : '📦 Bajo pedido'}
+              </span>
+            </div>
           </div>
 
-          {/* BOTÓN CONTACTO */}
+          {/* BOTONES */}
           <Link
             to="/contacto"
             className="inline-block bg-[#5C3D2E] text-white text-xs uppercase tracking-widest px-10 py-4 hover:bg-[#C9922A] transition-colors w-full text-center mb-4"

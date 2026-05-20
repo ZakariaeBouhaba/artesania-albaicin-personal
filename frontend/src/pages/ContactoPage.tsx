@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { enviarMensaje } from '../services/contacto'
 
 function ContactoPage() {
   const [formData, setFormData] = useState({
@@ -8,14 +9,26 @@ function ContactoPage() {
     mensaje: ''
   })
   const [enviado, setEnviado] = useState(false)
+  const [enviando, setEnviando] = useState(false)
+  const [error, setError] = useState('')
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setEnviado(true)
+    setEnviando(true)
+    setError('')
+    try {
+      await enviarMensaje(formData)
+      setEnviado(true)
+      setFormData({ nombre: '', email: '', asunto: '', mensaje: '' })
+    } catch {
+      setError('Error al enviar el mensaje. Por favor inténtalo de nuevo.')
+    } finally {
+      setEnviando(false)
+    }
   }
 
   return (
@@ -102,6 +115,11 @@ function ContactoPage() {
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+              {error && (
+                <div className="bg-red-50 border border-red-200 text-red-600 text-sm px-4 py-3">
+                  {error}
+                </div>
+              )}
               <div className="flex flex-col gap-2">
                 <label className="text-[#C9922A] text-xs uppercase tracking-widest">Nombre completo</label>
                 <input
@@ -156,9 +174,10 @@ function ContactoPage() {
               </div>
               <button
                 type="submit"
-                className="bg-[#5C3D2E] text-white text-xs uppercase tracking-widest py-4 hover:bg-[#C9922A] transition-colors"
+                disabled={enviando}
+                className="bg-[#5C3D2E] text-white text-xs uppercase tracking-widest py-4 hover:bg-[#C9922A] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Enviar mensaje ✦
+                {enviando ? 'Enviando...' : 'Enviar mensaje ✦'}
               </button>
             </form>
           )}

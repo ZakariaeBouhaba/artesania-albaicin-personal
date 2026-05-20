@@ -22,7 +22,7 @@ function ProductoCard({ producto }: Props) {
         {/* INFO */}
         <div className="p-5">
           <span className="text-[#C9922A] text-xs uppercase tracking-widest mb-2 block">
-            {producto.categoria}
+            {producto.categoria?.nombre}
           </span>
           <h3 className="font-serif text-[#5C3D2E] text-xl mb-2">
             {producto.nombre}
