@@ -27,7 +27,7 @@ function Sidebar() {
 
       {/* LOGO */}
       <div className="p-6 border-b border-[#C9922A]/30">
-        <img src="/Logo.png" alt="Artesanía Albaicín" className="h-16 object-contain mx-auto" />
+        <img src="/GRANADA.png" alt="Artesanía Albaicín" className="h-16 object-contain mx-auto" />
         <p className="text-[#E8C46A] text-xs uppercase tracking-widest text-center mt-2">Panel de gestión</p>
       </div>
 

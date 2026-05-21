@@ -15,7 +15,7 @@ function Header() {
         </nav>
 
         <Link to="/" className="flex justify-center">
-          <img src="/Logo.png" alt="Artesanía Albaicín" className="h-16 object-contain" />
+          <img src="/GRANADA.png" alt="Artesanía Albaicín" className="h-16 object-contain" />
         </Link>
 
         <nav className="flex gap-8 justify-end">
