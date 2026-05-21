@@ -1,13 +1,14 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { getCategorias, createCategoria, updateCategoria, deleteCategoria } from '../services/categorias'
-import { Plus, Pencil, Trash2 } from 'lucide-react'
+import { Plus, Pencil, Trash2, Search } from 'lucide-react'
 import type { Categoria } from '../types'
 
 function CategoriasPage() {
   const queryClient = useQueryClient()
   const [mostrarFormulario, setMostrarFormulario] = useState(false)
   const [categoriaEditando, setCategoriaEditando] = useState<Categoria | null>(null)
+  const [busqueda, setBusqueda] = useState('')
   const [formData, setFormData] = useState({
     nombre: '',
     descripcion: '',
@@ -18,6 +19,10 @@ function CategoriasPage() {
     queryKey: ['categorias'],
     queryFn: getCategorias
   })
+
+  const categoriasFiltradas = categorias.filter(c =>
+    c.nombre.toLowerCase().includes(busqueda.toLowerCase())
+  )
 
   const createMutation = useMutation({
     mutationFn: createCategoria,
@@ -79,6 +84,26 @@ function CategoriasPage() {
           <Plus size={16} />
           Nueva categoría
         </button>
+      </div>
+
+      {/* BÚSQUEDA */}
+      <div className="bg-white border border-[#F0E0B8] p-4 mb-6 flex items-center gap-3">
+        <Search size={16} className="text-[#C9922A]" />
+        <input
+          type="text"
+          value={busqueda}
+          onChange={(e) => setBusqueda(e.target.value)}
+          placeholder="Buscar categoría..."
+          className="flex-1 text-[#5C3D2E] text-sm outline-none"
+        />
+        {busqueda && (
+          <button
+            onClick={() => setBusqueda('')}
+            className="text-[#8B7355] text-xs hover:text-[#5C3D2E] transition-colors"
+          >
+            Limpiar
+          </button>
+        )}
       </div>
 
       {/* FORMULARIO */}
@@ -156,35 +181,43 @@ function CategoriasPage() {
               </tr>
             </thead>
             <tbody>
-              {categorias.map((categoria) => (
-                <tr key={categoria.id} className="border-b border-[#F0E0B8]">
-                  <td className="p-4">
-                    {categoria.imagen_url ? (
-                      <img src={categoria.imagen_url} alt={categoria.nombre} className="w-12 h-12 object-cover" />
-                    ) : (
-                      <div className="w-12 h-12 bg-[#F0E0B8]" />
-                    )}
-                  </td>
-                  <td className="p-4 text-[#5C3D2E] font-medium">{categoria.nombre}</td>
-                  <td className="p-4 text-[#8B7355] text-sm">{categoria.descripcion || '—'}</td>
-                  <td className="p-4">
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => abrirEditar(categoria)}
-                        className="text-[#C9922A] hover:text-[#5C3D2E] transition-colors"
-                      >
-                        <Pencil size={16} />
-                      </button>
-                      <button
-                        onClick={() => deleteMutation.mutate(categoria.id)}
-                        className="text-red-400 hover:text-red-600 transition-colors"
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
+              {categoriasFiltradas.length === 0 ? (
+                <tr>
+                  <td colSpan={4} className="p-8 text-center text-[#8B7355] text-sm italic">
+                    No se encontraron categorías
                   </td>
                 </tr>
-              ))}
+              ) : (
+                categoriasFiltradas.map((categoria) => (
+                  <tr key={categoria.id} className="border-b border-[#F0E0B8]">
+                    <td className="p-4">
+                      {categoria.imagen_url ? (
+                        <img src={categoria.imagen_url} alt={categoria.nombre} className="w-12 h-12 object-cover" />
+                      ) : (
+                        <div className="w-12 h-12 bg-[#F0E0B8]" />
+                      )}
+                    </td>
+                    <td className="p-4 text-[#5C3D2E] font-medium">{categoria.nombre}</td>
+                    <td className="p-4 text-[#8B7355] text-sm">{categoria.descripcion || '—'}</td>
+                    <td className="p-4">
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => abrirEditar(categoria)}
+                          className="text-[#C9922A] hover:text-[#5C3D2E] transition-colors"
+                        >
+                          <Pencil size={16} />
+                        </button>
+                        <button
+                          onClick={() => deleteMutation.mutate(categoria.id)}
+                          className="text-red-400 hover:text-red-600 transition-colors"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>

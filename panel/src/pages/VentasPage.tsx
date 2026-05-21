@@ -1,11 +1,14 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { getVentas, createVenta, deleteVenta } from '../services/ventas'
-import { Plus, Trash2 } from 'lucide-react'
+import { Plus, Trash2, Calendar } from 'lucide-react'
 
 function VentasPage() {
   const queryClient = useQueryClient()
   const [mostrarFormulario, setMostrarFormulario] = useState(false)
+  const [fechaFiltro, setFechaFiltro] = useState<string>(
+    new Date().toISOString().split('T')[0]
+  )
   const [formData, setFormData] = useState({
     descripcion: '',
     precio_original: '',
@@ -19,15 +22,16 @@ function VentasPage() {
     queryFn: () => getVentas()
   })
 
-  const ventasHoy = ventas.filter(v => {
-    const hoy = new Date().toDateString()
-    return new Date(v.fecha).toDateString() === hoy
+  const ventasFiltradas = ventas.filter(v => {
+    const fechaVenta = new Date(v.fecha).toISOString().split('T')[0]
+    return fechaVenta === fechaFiltro
   })
 
-  const totalHoy = ventasHoy.reduce((sum, v) => sum + v.total_final, 0)
-  const totalTPV = ventasHoy.filter(v => v.metodo_pago === 'TPV').reduce((sum, v) => sum + v.total_final, 0)
-  const totalEfectivo = ventasHoy.filter(v => v.metodo_pago === 'Efectivo').reduce((sum, v) => sum + v.total_final, 0)
+  const esHoy = fechaFiltro === new Date().toISOString().split('T')[0]
 
+  const totalFiltrado = ventasFiltradas.reduce((sum, v) => sum + v.total_final, 0)
+  const totalTPV = ventasFiltradas.filter(v => v.metodo_pago === 'TPV').reduce((sum, v) => sum + v.total_final, 0)
+  const totalEfectivo = ventasFiltradas.filter(v => v.metodo_pago === 'Efectivo').reduce((sum, v) => sum + v.total_final, 0)
   const totalFinal = Number(formData.precio_original) - Number(formData.descuento)
 
   const createMutation = useMutation({
@@ -73,11 +77,32 @@ function VentasPage() {
         </button>
       </div>
 
-      {/* RESUMEN DEL DÍA */}
+      {/* FILTRO POR FECHA */}
+      <div className="bg-white border border-[#F0E0B8] p-4 mb-6 flex items-center gap-4">
+        <Calendar size={16} className="text-[#C9922A]" />
+        <label className="text-[#C9922A] text-xs uppercase tracking-widest">Fecha</label>
+        <input
+          type="date"
+          value={fechaFiltro}
+          onChange={(e) => setFechaFiltro(e.target.value)}
+          className="border border-[#F0E0B8] px-4 py-2 text-[#5C3D2E] text-sm outline-none focus:border-[#C9922A]"
+        />
+        <button
+          onClick={() => setFechaFiltro(new Date().toISOString().split('T')[0])}
+          className="text-[#C9922A] text-xs uppercase tracking-widest hover:text-[#5C3D2E] transition-colors"
+        >
+          Hoy
+        </button>
+      </div>
+
+      {/* RESUMEN */}
       <div className="grid grid-cols-3 gap-6 mb-8">
         <div className="bg-white border border-[#F0E0B8] p-6">
-          <p className="text-[#C9922A] text-xs uppercase tracking-widest mb-2">Total hoy</p>
-          <p className="font-serif text-[#5C3D2E] text-4xl">{totalHoy.toFixed(2)}€</p>
+          <p className="text-[#C9922A] text-xs uppercase tracking-widest mb-2">
+            {esHoy ? 'Total hoy' : `Total ${new Date(fechaFiltro + 'T00:00:00').toLocaleDateString('es-ES')}`}
+          </p>
+          <p className="font-serif text-[#5C3D2E] text-4xl">{totalFiltrado.toFixed(2)}€</p>
+          <p className="text-[#8B7355] text-xs mt-1">{ventasFiltradas.length} ventas</p>
         </div>
         <div className="bg-white border border-[#F0E0B8] p-6">
           <p className="text-[#C9922A] text-xs uppercase tracking-widest mb-2">💳 TPV</p>
@@ -195,11 +220,13 @@ function VentasPage() {
 
       {/* LISTA DE VENTAS */}
       <div className="bg-white border border-[#F0E0B8] p-6">
-        <h2 className="font-serif text-[#5C3D2E] text-xl mb-6">Ventas de hoy</h2>
+        <h2 className="font-serif text-[#5C3D2E] text-xl mb-6">
+          {esHoy ? 'Ventas de hoy' : `Ventas del ${new Date(fechaFiltro + 'T00:00:00').toLocaleDateString('es-ES')}`}
+        </h2>
         {isLoading ? (
           <p className="text-[#8B7355] text-sm">Cargando...</p>
-        ) : ventasHoy.length === 0 ? (
-          <p className="text-[#8B7355] text-sm italic">No hay ventas registradas hoy</p>
+        ) : ventasFiltradas.length === 0 ? (
+          <p className="text-[#8B7355] text-sm italic">No hay ventas registradas para esta fecha</p>
         ) : (
           <table className="w-full">
             <thead>
@@ -214,7 +241,7 @@ function VentasPage() {
               </tr>
             </thead>
             <tbody>
-              {ventasHoy.map((venta) => (
+              {ventasFiltradas.map((venta) => (
                 <tr key={venta.id} className="border-b border-[#F0E0B8]">
                   <td className="py-3 text-[#8B7355] text-sm">
                     {new Date(venta.fecha).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}
