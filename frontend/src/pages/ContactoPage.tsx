@@ -1,7 +1,10 @@
 import { useState } from 'react'
 import { enviarMensaje } from '../services/contacto'
+import { useLanguage } from '../context/LanguageContext'
+import { MapPin, Clock, Phone, Mail } from 'lucide-react'
 
 function ContactoPage() {
+  const { t } = useLanguage()
   const [formData, setFormData] = useState({
     nombre: '',
     email: '',
@@ -25,7 +28,7 @@ function ContactoPage() {
       setEnviado(true)
       setFormData({ nombre: '', email: '', asunto: '', mensaje: '' })
     } catch {
-      setError('Error al enviar el mensaje. Por favor inténtalo de nuevo.')
+      setError(t.contacto.error)
     } finally {
       setEnviando(false)
     }
@@ -41,9 +44,9 @@ function ContactoPage() {
           <div className="absolute inset-0 bg-[#5C3D2E]/80" />
         </div>
         <div className="relative z-10 max-w-6xl mx-auto">
-          <p className="text-[#E8C46A] text-xs uppercase tracking-[6px] mb-4">✦ Encuéntranos</p>
-          <h1 className="font-serif text-white text-5xl md:text-7xl leading-none">Contacto</h1>
-          <p className="text-white/60 mt-4 max-w-xl">Estamos en el corazón del Albaicín, esperándote con los brazos abiertos.</p>
+          <p className="text-[#E8C46A] text-xs uppercase tracking-[6px] mb-4">{t.contacto.tag}</p>
+          <h1 className="font-serif text-white text-5xl md:text-7xl leading-none">{t.contacto.title}</h1>
+          <p className="text-white/60 mt-4 max-w-xl">{t.contacto.subtitle}</p>
         </div>
       </section>
 
@@ -52,36 +55,44 @@ function ContactoPage() {
 
         {/* INFO + MAPA */}
         <div>
-          <p className="text-[#C9922A] text-xs uppercase tracking-[4px] mb-8">— Información</p>
+          <p className="text-[#C9922A] text-xs uppercase tracking-[4px] mb-8">{t.contacto.info_tag}</p>
 
           <div className="flex flex-col gap-8 mb-12">
             <div className="flex gap-6 items-start">
-              <div className="w-12 h-12 border border-[#C9922A] flex items-center justify-center flex-shrink-0 text-xl">📍</div>
+              <div className="w-12 h-12 border border-[#C9922A] flex items-center justify-center flex-shrink-0">
+                <MapPin size={20} className="text-[#C9922A]" />
+              </div>
               <div>
-                <p className="text-[#C9922A] text-xs uppercase tracking-widest mb-2">Dirección</p>
-                <p className="text-[#5C3D2E] font-serif text-lg">Calle Calderería Nueva</p>
-                <p className="text-[#8B7355] text-sm">Albaicín, Granada, España</p>
+                <p className="text-[#C9922A] text-xs uppercase tracking-widest mb-2">{t.contacto.address_label}</p>
+                <p className="text-[#5C3D2E] font-serif text-lg">{t.contacto.address_street}</p>
+                <p className="text-[#8B7355] text-sm">{t.contacto.address_city}</p>
               </div>
             </div>
             <div className="flex gap-6 items-start">
-              <div className="w-12 h-12 border border-[#C9922A] flex items-center justify-center flex-shrink-0 text-xl">🕐</div>
+              <div className="w-12 h-12 border border-[#C9922A] flex items-center justify-center flex-shrink-0">
+                <Clock size={20} className="text-[#C9922A]" />
+              </div>
               <div>
-                <p className="text-[#C9922A] text-xs uppercase tracking-widest mb-2">Horario</p>
-                <p className="text-[#5C3D2E] font-serif text-lg">Lunes — Domingo</p>
-                <p className="text-[#8B7355] text-sm">9:30 — 00:00</p>
+                <p className="text-[#C9922A] text-xs uppercase tracking-widest mb-2">{t.contacto.hours_label}</p>
+                <p className="text-[#5C3D2E] font-serif text-lg">{t.contacto.hours_days}</p>
+                <p className="text-[#8B7355] text-sm">{t.contacto.hours_time}</p>
               </div>
             </div>
             <div className="flex gap-6 items-start">
-              <div className="w-12 h-12 border border-[#C9922A] flex items-center justify-center flex-shrink-0 text-xl">📞</div>
+              <div className="w-12 h-12 border border-[#C9922A] flex items-center justify-center flex-shrink-0">
+                <Phone size={20} className="text-[#C9922A]" />
+              </div>
               <div>
-                <p className="text-[#C9922A] text-xs uppercase tracking-widest mb-2">Teléfono</p>
+                <p className="text-[#C9922A] text-xs uppercase tracking-widest mb-2">{t.contacto.phone_label}</p>
                 <p className="text-[#5C3D2E] font-serif text-lg">+34 958 000 000</p>
               </div>
             </div>
             <div className="flex gap-6 items-start">
-              <div className="w-12 h-12 border border-[#C9922A] flex items-center justify-center flex-shrink-0 text-xl">✉️</div>
+              <div className="w-12 h-12 border border-[#C9922A] flex items-center justify-center flex-shrink-0">
+                <Mail size={20} className="text-[#C9922A]" />
+              </div>
               <div>
-                <p className="text-[#C9922A] text-xs uppercase tracking-widest mb-2">Email</p>
+                <p className="text-[#C9922A] text-xs uppercase tracking-widest mb-2">{t.contacto.email_label}</p>
                 <p className="text-[#5C3D2E] font-serif text-lg">hola@artesaniaalbaicin.es</p>
               </div>
             </div>
@@ -100,17 +111,17 @@ function ContactoPage() {
 
         {/* FORMULARIO */}
         <div>
-          <p className="text-[#C9922A] text-xs uppercase tracking-[4px] mb-8">— Escríbenos</p>
+          <p className="text-[#C9922A] text-xs uppercase tracking-[4px] mb-8">{t.contacto.form_tag}</p>
 
           {enviado ? (
             <div className="bg-[#5C3D2E] p-10 text-center">
-              <p className="font-serif text-[#E8C46A] text-3xl mb-4">✦ Mensaje enviado</p>
-              <p className="text-white/70 text-sm mb-8">Gracias por contactarnos. Te responderemos lo antes posible.</p>
+              <p className="font-serif text-[#E8C46A] text-3xl mb-4">{t.contacto.success_title}</p>
+              <p className="text-white/70 text-sm mb-8">{t.contacto.success_desc}</p>
               <button
                 onClick={() => setEnviado(false)}
                 className="border border-[#E8C46A] text-[#E8C46A] text-xs uppercase tracking-widest px-8 py-3 hover:bg-[#E8C46A] hover:text-[#5C3D2E] transition-colors"
               >
-                Enviar otro mensaje
+                {t.contacto.success_btn}
               </button>
             </div>
           ) : (
@@ -121,31 +132,31 @@ function ContactoPage() {
                 </div>
               )}
               <div className="flex flex-col gap-2">
-                <label className="text-[#C9922A] text-xs uppercase tracking-widest">Nombre completo</label>
+                <label className="text-[#C9922A] text-xs uppercase tracking-widest">{t.contacto.name_label}</label>
                 <input
                   type="text"
                   name="nombre"
                   value={formData.nombre}
                   onChange={handleChange}
                   required
-                  placeholder="Tu nombre"
+                  placeholder={t.contacto.name_placeholder}
                   className="border border-[#F0E0B8] bg-white px-4 py-3 text-[#5C3D2E] text-sm outline-none focus:border-[#C9922A] transition-colors"
                 />
               </div>
               <div className="flex flex-col gap-2">
-                <label className="text-[#C9922A] text-xs uppercase tracking-widest">Correo electrónico</label>
+                <label className="text-[#C9922A] text-xs uppercase tracking-widest">{t.contacto.email_label}</label>
                 <input
                   type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  placeholder="tu@correo.com"
+                  placeholder={t.contacto.email_placeholder}
                   className="border border-[#F0E0B8] bg-white px-4 py-3 text-[#5C3D2E] text-sm outline-none focus:border-[#C9922A] transition-colors"
                 />
               </div>
               <div className="flex flex-col gap-2">
-                <label className="text-[#C9922A] text-xs uppercase tracking-widest">Asunto</label>
+                <label className="text-[#C9922A] text-xs uppercase tracking-widest">{t.contacto.subject_label}</label>
                 <select
                   name="asunto"
                   value={formData.asunto}
@@ -153,21 +164,21 @@ function ContactoPage() {
                   required
                   className="border border-[#F0E0B8] bg-white px-4 py-3 text-[#5C3D2E] text-sm outline-none focus:border-[#C9922A] transition-colors"
                 >
-                  <option value="">— Selecciona un asunto —</option>
-                  <option value="informacion">Información sobre productos</option>
-                  <option value="pedido">Consulta sobre pedido</option>
-                  <option value="visita">Planificar visita</option>
-                  <option value="otro">Otro</option>
+                  <option value="">{t.contacto.subject_placeholder}</option>
+                  <option value="informacion">{t.contacto.subject_info}</option>
+                  <option value="pedido">{t.contacto.subject_order}</option>
+                  <option value="visita">{t.contacto.subject_visit}</option>
+                  <option value="otro">{t.contacto.subject_other}</option>
                 </select>
               </div>
               <div className="flex flex-col gap-2">
-                <label className="text-[#C9922A] text-xs uppercase tracking-widest">Mensaje</label>
+                <label className="text-[#C9922A] text-xs uppercase tracking-widest">{t.contacto.message_label}</label>
                 <textarea
                   name="mensaje"
                   value={formData.mensaje}
                   onChange={handleChange}
                   required
-                  placeholder="Escribe tu mensaje aquí..."
+                  placeholder={t.contacto.message_placeholder}
                   rows={6}
                   className="border border-[#F0E0B8] bg-white px-4 py-3 text-[#5C3D2E] text-sm outline-none focus:border-[#C9922A] transition-colors resize-none"
                 />
@@ -177,7 +188,7 @@ function ContactoPage() {
                 disabled={enviando}
                 className="bg-[#5C3D2E] text-white text-xs uppercase tracking-widest py-4 hover:bg-[#C9922A] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {enviando ? 'Enviando...' : 'Enviar mensaje ✦'}
+                {enviando ? t.contacto.sending : t.contacto.send_btn}
               </button>
             </form>
           )}

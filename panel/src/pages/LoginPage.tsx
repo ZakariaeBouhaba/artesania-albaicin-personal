@@ -302,7 +302,7 @@ function LoginPage() {
 
           {/* Logo */}
           <div className="card-logo-section">
-            <img src="/GRANADA.png" alt="Artesanía Albaicín" />
+            <img src="/gran.png" alt="Artesanía Albaicín" />
             <span className="card-logo-label">Panel de gestión</span>
           </div>
 

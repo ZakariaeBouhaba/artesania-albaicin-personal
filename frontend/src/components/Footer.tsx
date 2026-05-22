@@ -5,7 +5,7 @@ function Footer() {
 
         {/* LOGO Y DESCRIPCIÓN */}
         <div>
-          <img src="/Logo.png" alt="Artesanía Albaicín" className="h-24 object-contain mb-4" />
+          <img src="/gran.png" alt="Artesanía Albaicín" className="h-24 object-contain mb-4" />
           <p className="text-white/50 text-sm leading-relaxed">
             Artesanía tradicional del Albaicín. Granada, España.
           </p>
