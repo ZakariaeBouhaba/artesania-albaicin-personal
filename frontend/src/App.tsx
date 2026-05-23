@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Toaster } from 'react-hot-toast'
+import { HelmetProvider } from 'react-helmet-async'
 import Header from './components/Header.tsx'
 import Footer from './components/Footer'
 import HomePage from './pages/HomePage'
@@ -14,21 +15,23 @@ const queryClient = new QueryClient()
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <Header />
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/catalogo" element={<CatalogoPage />} />
-          <Route path="/producto/:id" element={<ProductoPage />} />
-          <Route path="/nosotros" element={<NosotrosPage />} />
-          <Route path="/contacto" element={<ContactoPage />} />
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
-        <Footer />
-      </BrowserRouter>
-      <Toaster position="top-right" />
-    </QueryClientProvider>
+    <HelmetProvider>
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <Header />
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/catalogo" element={<CatalogoPage />} />
+            <Route path="/producto/:id" element={<ProductoPage />} />
+            <Route path="/nosotros" element={<NosotrosPage />} />
+            <Route path="/contacto" element={<ContactoPage />} />
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+          <Footer />
+        </BrowserRouter>
+        <Toaster position="top-right" />
+      </QueryClientProvider>
+    </HelmetProvider>
   )
 }
 

@@ -2,14 +2,12 @@ export type Idioma = 'es' | 'en' | 'fr'
 
 export const traducciones = {
   es: {
-    // Header
     nav: {
       inicio: 'Inicio',
       catalogo: 'Catálogo',
       nosotros: 'Nosotros',
       contacto: 'Contacto',
     },
-    // HomePage
     home: {
       hero_tag: 'Artesanía de Granada · Albaicín',
       hero_title1: 'Artesanía',
@@ -39,7 +37,35 @@ export const traducciones = {
       perfumes: 'Perfumes',
       perfumes_desc: 'Incienso, aceites y perfumes árabes',
     },
-    // NosotrosPage
+    catalogo: {
+      tag: '✦ Nuestras creaciones',
+      title: 'Catálogo',
+      desc: 'Cada pieza ha sido seleccionada con cuidado y elaborada a mano por artesanos de Granada, Marruecos y Turquía.',
+      todos: 'Todos',
+      vacio_titulo: 'No hay productos en esta categoría',
+      vacio_desc: 'Prueba con otra categoría',
+    },
+    producto: {
+      inicio: 'Inicio',
+      catalogo: 'Catálogo',
+      origen: 'Origen',
+      material: 'Material',
+      categoria: 'Categoría',
+      elaboracion: 'Elaboración',
+      hecho_a_mano: '✦ Hecho a mano',
+      estado: 'Estado',
+      disponible: '✅ Disponible',
+      agotado: '❌ Agotado',
+      bajo_pedido: '📦 Bajo pedido',
+      consultar: 'Consultar disponibilidad',
+      volver: '← Volver al catálogo',
+      no_encontrado: 'Producto no encontrado',
+    },
+    card: {
+      origen: 'Origen',
+      material: 'Material',
+      hecho_a_mano: '✦ Hecho a mano',
+    },
     nosotros: {
       tag: '✦ Quiénes somos',
       title: 'Nuestra\nHistoria',
@@ -62,7 +88,6 @@ export const traducciones = {
       quote: '"Cada pieza cuenta una historia.\nLa nuestra lleva 45 años escribiéndose\nen el corazón del Albaicín"',
       quote_btn: 'Visítanos en Granada',
     },
-    // ContactoPage
     contacto: {
       tag: '✦ Encuéntranos',
       title: 'Contacto',
@@ -95,7 +120,6 @@ export const traducciones = {
       success_btn: 'Enviar otro mensaje',
       error: 'Error al enviar el mensaje. Por favor inténtalo de nuevo.',
     },
-    // Footer
     footer: {
       desc: 'Artesanía auténtica del corazón de Granada desde 1980.',
       rights: 'Todos los derechos reservados.',
@@ -137,6 +161,35 @@ export const traducciones = {
       tea: 'World of Tea',
       perfumes: 'Perfumes',
       perfumes_desc: 'Incense, oils and Arabic perfumes',
+    },
+    catalogo: {
+      tag: '✦ Our creations',
+      title: 'Catalogue',
+      desc: 'Each piece has been carefully selected and handmade by artisans from Granada, Morocco and Turkey.',
+      todos: 'All',
+      vacio_titulo: 'No products in this category',
+      vacio_desc: 'Try another category',
+    },
+    producto: {
+      inicio: 'Home',
+      catalogo: 'Catalogue',
+      origen: 'Origin',
+      material: 'Material',
+      categoria: 'Category',
+      elaboracion: 'Craftsmanship',
+      hecho_a_mano: '✦ Handmade',
+      estado: 'Status',
+      disponible: '✅ Available',
+      agotado: '❌ Out of stock',
+      bajo_pedido: '📦 Made to order',
+      consultar: 'Check availability',
+      volver: '← Back to catalogue',
+      no_encontrado: 'Product not found',
+    },
+    card: {
+      origen: 'Origin',
+      material: 'Material',
+      hecho_a_mano: '✦ Handmade',
     },
     nosotros: {
       tag: '✦ Who we are',
@@ -233,6 +286,35 @@ export const traducciones = {
       tea: 'Monde du Thé',
       perfumes: 'Parfums',
       perfumes_desc: "Encens, huiles et parfums arabes",
+    },
+    catalogo: {
+      tag: '✦ Nos créations',
+      title: 'Catalogue',
+      desc: 'Chaque pièce a été soigneusement sélectionnée et fabriquée à la main par des artisans de Grenade, du Maroc et de Turquie.',
+      todos: 'Tous',
+      vacio_titulo: 'Aucun produit dans cette catégorie',
+      vacio_desc: 'Essayez une autre catégorie',
+    },
+    producto: {
+      inicio: 'Accueil',
+      catalogo: 'Catalogue',
+      origen: 'Origine',
+      material: 'Matériau',
+      categoria: 'Catégorie',
+      elaboracion: 'Fabrication',
+      hecho_a_mano: '✦ Fait main',
+      estado: 'État',
+      disponible: '✅ Disponible',
+      agotado: '❌ Épuisé',
+      bajo_pedido: '📦 Sur commande',
+      consultar: 'Vérifier la disponibilité',
+      volver: '← Retour au catalogue',
+      no_encontrado: 'Produit introuvable',
+    },
+    card: {
+      origen: 'Origine',
+      material: 'Matériau',
+      hecho_a_mano: '✦ Fait main',
     },
     nosotros: {
       tag: '✦ Qui sommes-nous',

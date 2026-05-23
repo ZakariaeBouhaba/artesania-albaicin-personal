@@ -47,3 +47,12 @@ export const subirImagen = async (productoId: number, file: File): Promise<{ ima
   })
   return response.data
 }
+
+export const getImagenes = async (productoId: number): Promise<{ id: number; imagen_url: string; producto_id: number }[]> => {
+  const response = await api.get(`/imagenes/${productoId}`)
+  return response.data
+}
+
+export const deleteImagen = async (imagenId: number): Promise<void> => {
+  await api.delete(`/imagenes/${imagenId}`)
+}
