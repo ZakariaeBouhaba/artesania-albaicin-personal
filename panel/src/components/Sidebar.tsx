@@ -1,26 +1,59 @@
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { useQuery } from '@tanstack/react-query'
+import { getEstadisticas } from '../services/estadisticas'
+import { useEffect, useRef } from 'react'
+import toast from 'react-hot-toast'
 import {
-  LayoutDashboard,
-  Package,
-  Tags,
-  ShoppingBag,
-  MessageSquare,
-  Users,
-  LogOut
+  LayoutDashboard, Package, Tags, ShoppingBag,
+  MessageSquare, Users, LogOut
 } from 'lucide-react'
-
-const menuItems = [
-  { path: '/', icon: LayoutDashboard, label: 'Dashboard' },
-  { path: '/productos', icon: Package, label: 'Productos' },
-  { path: '/categorias', icon: Tags, label: 'Categorías' },
-  { path: '/ventas', icon: ShoppingBag, label: 'Ventas' },
-  { path: '/mensajes', icon: MessageSquare, label: 'Mensajes' },
-]
 
 function Sidebar() {
   const { pathname } = useLocation()
   const { usuario, logout } = useAuth()
+  const mensajesAnteriores = useRef<number | null>(null)
+
+  const { data: stats } = useQuery({
+    queryKey: ['estadisticas'],
+    queryFn: getEstadisticas,
+    refetchInterval: 30000
+  })
+
+  const mensajesSinLeer = stats?.num_mensajes_sin_leer || 0
+
+  // Toast cuando llegan mensajes nuevos
+  useEffect(() => {
+    if (mensajesAnteriores.current === null) {
+      mensajesAnteriores.current = mensajesSinLeer
+      return
+    }
+    if (mensajesSinLeer > mensajesAnteriores.current) {
+      const nuevos = mensajesSinLeer - mensajesAnteriores.current
+      toast.custom((t) => (
+        <div className={`${t.visible ? 'animate-enter' : 'animate-leave'} flex items-center gap-3 bg-white border border-[#F0E0B8] shadow-lg px-5 py-4 max-w-sm`}>
+          <div className="w-8 h-8 bg-[#C9922A] rounded-full flex items-center justify-center flex-shrink-0">
+            <MessageSquare size={14} className="text-white" />
+          </div>
+          <div>
+            <p className="text-[#5C3D2E] text-sm font-medium">
+              {nuevos === 1 ? 'Nuevo mensaje recibido' : `${nuevos} nuevos mensajes`}
+            </p>
+            <p className="text-[#8B7355] text-xs">Tienes {mensajesSinLeer} mensajes sin leer</p>
+          </div>
+        </div>
+      ), { duration: 5000 })
+    }
+    mensajesAnteriores.current = mensajesSinLeer
+  }, [mensajesSinLeer])
+
+  const menuItems = [
+    { path: '/', icon: LayoutDashboard, label: 'Dashboard', badge: 0 },
+    { path: '/productos', icon: Package, label: 'Productos', badge: 0 },
+    { path: '/categorias', icon: Tags, label: 'Categorías', badge: 0 },
+    { path: '/ventas', icon: ShoppingBag, label: 'Ventas', badge: 0 },
+    { path: '/mensajes', icon: MessageSquare, label: 'Mensajes', badge: mensajesSinLeer },
+  ]
 
   return (
     <aside className="w-64 bg-[#5C3D2E] min-h-screen flex flex-col fixed left-0 top-0">
@@ -47,8 +80,20 @@ function Sidebar() {
                       : 'text-white/70 hover:bg-[#C9922A]/20 hover:text-white'
                   }`}
                 >
-                  <Icon size={18} />
-                  <span className="text-sm font-medium">{item.label}</span>
+                  <div className="relative">
+                    <Icon size={18} />
+                    {item.badge > 0 && (
+                      <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center font-bold leading-none">
+                        {item.badge > 9 ? '9+' : item.badge}
+                      </span>
+                    )}
+                  </div>
+                  <span className="text-sm font-medium flex-1">{item.label}</span>
+                  {item.badge > 0 && (
+                    <span className="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full font-medium">
+                      {item.badge}
+                    </span>
+                  )}
                 </Link>
               </li>
             )

@@ -12,8 +12,9 @@ body {
 /* ANIMACIONES DE SCROLL */
 .fade-up {
   opacity: 0;
-  transform: translateY(40px);
+  transform: translateY(30px);
   transition: opacity 0.7s ease, transform 0.7s ease;
+  will-change: opacity, transform;
 }
 
 .fade-up.visible {
@@ -23,8 +24,9 @@ body {
 
 .fade-left {
   opacity: 0;
-  transform: translateX(-40px);
+  transform: translateX(-30px);
   transition: opacity 0.7s ease, transform 0.7s ease;
+  will-change: opacity, transform;
 }
 
 .fade-left.visible {
@@ -34,8 +36,9 @@ body {
 
 .fade-right {
   opacity: 0;
-  transform: translateX(40px);
+  transform: translateX(30px);
   transition: opacity 0.7s ease, transform 0.7s ease;
+  will-change: opacity, transform;
 }
 
 .fade-right.visible {
