@@ -3,10 +3,22 @@ import { useLanguage } from '../context/LanguageContext'
 import { useQuery } from '@tanstack/react-query'
 import { getProductos } from '../services/productos'
 import SEO from '../components/SEO'
-import { useScrollAnimation } from '../hooks/useScrollAnimation'
+import { useEffect } from 'react'
+import AOS from 'aos'
+import 'aos/dist/aos.css'
+import { MapPin, Clock, HandMetal, Award, Users } from 'lucide-react'
 
 function HomePage() {
   const { t } = useLanguage()
+
+  useEffect(() => {
+    AOS.init({
+      duration: 700,
+      once: true,
+      offset: 80,
+      easing: 'ease-out'
+    })
+  }, [])
 
   const { data: productos = [] } = useQuery({
     queryKey: ['productos'],
@@ -16,12 +28,6 @@ function HomePage() {
   const productosDestacados = productos
     .filter(p => p.estado === 'disponible' && p.imagen_url)
     .slice(0, 3)
-
-  const statsRef = useScrollAnimation()
-  const categoriesRef = useScrollAnimation()
-  const featuredRef = useScrollAnimation()
-  const aboutLeftRef = useScrollAnimation()
-  const aboutRightRef = useScrollAnimation()
 
   return (
     <>
@@ -42,55 +48,46 @@ function HomePage() {
           </div>
           <div className="absolute inset-0 bg-gradient-to-t from-[#5C3D2E] via-transparent to-transparent" />
           <div className="relative z-10 max-w-6xl mx-auto px-6 pb-24">
-            <p className="text-[#E8C46A] text-xs uppercase tracking-[6px] mb-4">
+            <p data-aos="fade-up" data-aos-delay="100" className="text-[#E8C46A] text-xs uppercase tracking-[6px] mb-4">
               {t.home.hero_tag}
             </p>
-            <h1 className="font-serif text-white text-6xl md:text-8xl leading-none mb-6">
+            <h1 data-aos="fade-up" data-aos-delay="200" className="font-serif text-white text-6xl md:text-8xl leading-none mb-6">
               {t.home.hero_title1}<br />
               <span className="text-[#E8C46A] italic">{t.home.hero_title2}</span>
             </h1>
-            <p className="text-white/70 text-lg max-w-xl mb-8">
+            <p data-aos="fade-up" data-aos-delay="300" className="text-white/70 text-lg max-w-xl mb-8">
               {t.home.hero_desc}
             </p>
-            <Link to="/catalogo" className="inline-block bg-[#C9922A] text-white text-xs uppercase tracking-widest font-bold px-8 py-4 hover:bg-[#E8C46A] transition-colors">
-              {t.home.hero_btn}
-            </Link>
+            <div data-aos="fade-up" data-aos-delay="400">
+              <Link to="/catalogo" className="inline-block bg-[#C9922A] text-white text-xs uppercase tracking-widest font-bold px-8 py-4 hover:bg-[#E8C46A] transition-colors">
+                {t.home.hero_btn}
+              </Link>
+            </div>
           </div>
         </section>
 
         {/* FRANJA DE CONFIANZA */}
-        <div
-          ref={statsRef.ref}
-          className={`bg-[#5C3D2E] border-t border-[#C9922A] border-b fade-up ${statsRef.visible ? 'visible' : ''}`}
-        >
-          <div className="max-w-6xl mx-auto px-6 py-8 grid grid-cols-4 gap-4">
-            <div className="text-center border-r border-[#C9922A]/30">
-              <p className="font-serif text-[#E8C46A] text-4xl mb-1">45+</p>
-              <p className="text-white/60 text-xs uppercase tracking-widest">{t.home.stats_years}</p>
-            </div>
-            <div className="text-center border-r border-[#C9922A]/30">
-              <p className="font-serif text-[#E8C46A] text-4xl mb-1">200+</p>
-              <p className="text-white/60 text-xs uppercase tracking-widest">{t.home.stats_products}</p>
-            </div>
-            <div className="text-center border-r border-[#C9922A]/30">
-              <p className="font-serif text-[#E8C46A] text-4xl mb-1">100%</p>
-              <p className="text-white/60 text-xs uppercase tracking-widest">{t.home.stats_handmade}</p>
-            </div>
-            <div className="text-center">
-              <p className="font-serif text-[#E8C46A] text-4xl mb-1">★★★★★</p>
-              <p className="text-white/60 text-xs uppercase tracking-widest">{t.home.stats_location}</p>
-            </div>
+        <section className="bg-[#5C3D2E] border-t border-[#C9922A] border-b">
+          <div className="max-w-6xl mx-auto px-6 py-8 grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[
+              { value: '45+', label: t.home.stats_years },
+              { value: '200+', label: t.home.stats_products },
+              { value: '100%', label: t.home.stats_handmade },
+              { value: '★★★★★', label: t.home.stats_location },
+            ].map((stat, i) => (
+              <div key={i} data-aos="fade-up" data-aos-delay={i * 100} className={`text-center ${i < 3 ? 'border-r border-[#C9922A]/30' : ''}`}>
+                <p className="font-serif text-[#E8C46A] text-4xl mb-1">{stat.value}</p>
+                <p className="text-white/60 text-xs uppercase tracking-widest">{stat.label}</p>
+              </div>
+            ))}
           </div>
-        </div>
+        </section>
 
         {/* CATEGORÍAS */}
-        <div
-          ref={categoriesRef.ref}
-          className={`max-w-6xl mx-auto px-6 pt-8 pb-16 fade-up ${categoriesRef.visible ? 'visible' : ''}`}
-        >
-          <p className="text-[#C9922A] text-xs uppercase tracking-[4px] mb-2">{t.home.categories_tag}</p>
-          <h2 className="font-serif text-4xl text-[#5C3D2E] mb-8 whitespace-pre-line">{t.home.categories_title}</h2>
-          <div className="grid grid-cols-3 grid-rows-3 gap-3 h-[500px]">
+        <section className="max-w-6xl mx-auto px-6 pt-10 pb-10">
+          <p data-aos="fade-up" className="text-[#C9922A] text-xs uppercase tracking-[4px] mb-2">{t.home.categories_tag}</p>
+          <h2 data-aos="fade-up" data-aos-delay="100" className="font-serif text-4xl text-[#5C3D2E] mb-8 whitespace-pre-line">{t.home.categories_title}</h2>
+          <div data-aos="fade-up" data-aos-delay="200" className="grid grid-cols-3 grid-rows-3 gap-3 h-[500px]">
             <div className="row-span-2 relative overflow-hidden cursor-pointer group">
               <img src="/ceramica.png" alt={t.home.ceramics} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
@@ -136,24 +133,28 @@ function HomePage() {
               </div>
             </div>
           </div>
-        </div>
+        </section>
+
+        {/* FRASE IMPACTANTE */}
+        <section className="bg-[#5C3D2E] py-20 px-6">
+          <div className="max-w-4xl mx-auto text-center">
+            <p data-aos="fade-up" className="text-[#C9922A] text-xs uppercase tracking-[6px] mb-8">✦ Nuestra esencia</p>
+            <h2 data-aos="fade-up" data-aos-delay="100" className="font-serif text-white text-4xl md:text-5xl leading-tight italic">
+              "Cada pieza cuenta una historia.<br />La nuestra lleva 45 años escribiéndose<br />en el corazón del Albaicín"
+            </h2>
+            <div data-aos="fade-up" data-aos-delay="200" className="h-px bg-gradient-to-r from-transparent via-[#C9922A] to-transparent mt-12" />
+          </div>
+        </section>
 
         {/* PRODUCTOS DESTACADOS */}
         {productosDestacados.length > 0 && (
-          <div
-            ref={featuredRef.ref}
-            className={`bg-[#FDF8F0] border-t border-[#F0E0B8] py-20 px-6 fade-up ${featuredRef.visible ? 'visible' : ''}`}
-          >
+          <section className="bg-[#FDF8F0] border-t border-[#F0E0B8] py-12 px-6">
             <div className="max-w-6xl mx-auto">
-              <p className="text-[#C9922A] text-xs uppercase tracking-[4px] mb-2">{t.home.featured_tag}</p>
-              <h2 className="font-serif text-4xl text-[#5C3D2E] mb-12 whitespace-pre-line">{t.home.featured_title}</h2>
+              <p data-aos="fade-up" className="text-[#C9922A] text-xs uppercase tracking-[4px] mb-2">{t.home.featured_tag}</p>
+              <h2 data-aos="fade-up" data-aos-delay="100" className="font-serif text-4xl text-[#5C3D2E] mb-10 whitespace-pre-line">{t.home.featured_title}</h2>
               <div className="grid grid-cols-3 gap-8">
                 {productosDestacados.map((producto, i) => (
-                  <Link
-                    key={producto.id}
-                    to={`/producto/${producto.id}`}
-                    className={`group fade-up ${featuredRef.visible ? 'visible' : ''} delay-${(i + 1) * 100}`}
-                  >
+                  <Link key={producto.id} to={`/producto/${producto.id}`} className="group" data-aos="fade-up" data-aos-delay={i * 150}>
                     <div className="overflow-hidden mb-4">
                       <img
                         src={producto.imagen_url}
@@ -169,7 +170,7 @@ function HomePage() {
                   </Link>
                 ))}
               </div>
-              <div className="text-center mt-12">
+              <div data-aos="fade-up" className="text-center mt-10">
                 <Link
                   to="/catalogo"
                   className="inline-block border border-[#5C3D2E] text-[#5C3D2E] text-xs uppercase tracking-widest px-10 py-4 hover:bg-[#5C3D2E] hover:text-white transition-colors"
@@ -178,15 +179,43 @@ function HomePage() {
                 </Link>
               </div>
             </div>
-          </div>
+          </section>
         )}
 
+        {/* POR QUÉ ELEGIRNOS */}
+        <section className="bg-[#FDF8F0] border-t border-[#F0E0B8] py-16 px-6">
+          <div className="max-w-6xl mx-auto">
+            <p data-aos="fade-up" className="text-[#C9922A] text-xs uppercase tracking-[4px] mb-2 text-center">— Por qué elegirnos</p>
+            <h2 data-aos="fade-up" data-aos-delay="100" className="font-serif text-4xl text-[#5C3D2E] mb-12 text-center">La diferencia artesanal</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div data-aos="fade-up" data-aos-delay="100" className="text-center">
+                <div className="w-16 h-16 border border-[#C9922A] flex items-center justify-center mx-auto mb-6">
+                  <HandMetal size={28} className="text-[#C9922A]" />
+                </div>
+                <h3 className="font-serif text-[#5C3D2E] text-xl mb-3">100% Hecho a mano</h3>
+                <p className="text-[#8B7355] text-sm leading-relaxed">Cada pieza es única, elaborada artesanalmente con técnicas transmitidas de generación en generación.</p>
+              </div>
+              <div data-aos="fade-up" data-aos-delay="200" className="text-center">
+                <div className="w-16 h-16 border border-[#C9922A] flex items-center justify-center mx-auto mb-6">
+                  <Users size={28} className="text-[#C9922A]" />
+                </div>
+                <h3 className="font-serif text-[#5C3D2E] text-xl mb-3">Artesanos locales</h3>
+                <p className="text-[#8B7355] text-sm leading-relaxed">Trabajamos directamente con artesanos de Granada, Marruecos y Turquía. Sin intermediarios.</p>
+              </div>
+              <div data-aos="fade-up" data-aos-delay="300" className="text-center">
+                <div className="w-16 h-16 border border-[#C9922A] flex items-center justify-center mx-auto mb-6">
+                  <Award size={28} className="text-[#C9922A]" />
+                </div>
+                <h3 className="font-serif text-[#5C3D2E] text-xl mb-3">45 años de tradición</h3>
+                <p className="text-[#8B7355] text-sm leading-relaxed">Desde 1980 en el corazón del Albaicín, preservando el arte nazarí para el mundo.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* NUESTRA HISTORIA */}
-        <div className="bg-[#FDF8F0] max-w-6xl mx-auto px-6 py-24 grid grid-cols-2 gap-16 items-center">
-          <div
-            ref={aboutLeftRef.ref}
-            className={`fade-left ${aboutLeftRef.visible ? 'visible' : ''}`}
-          >
+        <section className="bg-[#FDF8F0] border-t border-[#F0E0B8] max-w-6xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+          <div data-aos="fade-right">
             <p className="text-[#C9922A] text-xs uppercase tracking-[4px] mb-4">{t.home.about_tag}</p>
             <h2 className="font-serif text-4xl text-[#5C3D2E] mb-6 whitespace-pre-line">{t.home.about_title}</h2>
             <p className="text-[#8B7355] text-lg leading-relaxed mb-6">{t.home.about_desc1}</p>
@@ -195,17 +224,50 @@ function HomePage() {
               {t.home.about_btn}
             </Link>
           </div>
-          <div
-            ref={aboutRightRef.ref}
-            className={`relative fade-right ${aboutRightRef.visible ? 'visible' : ''}`}
-          >
+          <div data-aos="fade-left" className="relative">
             <img src="/hero-alhambra.jpg" alt="Albaicín Granada" className="w-full h-[500px] object-cover" />
             <div className="absolute -bottom-6 -left-6 bg-[#C9922A] text-white p-6">
               <p className="font-serif text-3xl font-bold">45+</p>
               <p className="text-xs uppercase tracking-widest">{t.home.stats_years}</p>
             </div>
           </div>
-        </div>
+        </section>
+
+        {/* BANNER UBICACIÓN */}
+        <section className="bg-[#5C3D2E] border-t border-[#C9922A]/30 py-10 px-6">
+          <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <div data-aos="fade-right" className="flex items-center gap-6">
+              <div className="w-12 h-12 border border-[#C9922A]/40 flex items-center justify-center flex-shrink-0">
+                <MapPin size={20} className="text-[#E8C46A]" />
+              </div>
+              <div>
+                <p className="text-[#E8C46A] text-xs uppercase tracking-widest mb-1">Dónde estamos</p>
+                <p className="text-white font-serif text-lg">Calle Calderería Nueva, Albaicín</p>
+                <p className="text-white/50 text-sm">Granada, España</p>
+              </div>
+            </div>
+            <div data-aos="fade-up" className="flex items-center gap-6">
+              <div className="w-12 h-12 border border-[#C9922A]/40 flex items-center justify-center flex-shrink-0">
+                <Clock size={20} className="text-[#E8C46A]" />
+              </div>
+              <div>
+                <p className="text-[#E8C46A] text-xs uppercase tracking-widest mb-1">Horario</p>
+                <p className="text-white font-serif text-lg">Lunes — Domingo</p>
+                <p className="text-white/50 text-sm">9:30 — 00:00</p>
+              </div>
+            </div>
+            <div data-aos="fade-left">
+              <a
+                href="https://maps.google.com/?q=Calle+Calderería+Nueva+Granada"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block border border-[#E8C46A] text-[#E8C46A] text-xs uppercase tracking-widest px-8 py-4 hover:bg-[#E8C46A] hover:text-[#5C3D2E] transition-colors"
+              >
+                Cómo llegar →
+              </a>
+            </div>
+          </div>
+        </section>
 
         {/* BOTÓN WHATSAPP FLOTANTE */}
         <a
