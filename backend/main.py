@@ -1,10 +1,11 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from database import engine
 import models
 from routers import productos, categorias, contacto, auth, ventas, estadisticas, imagenes
-import shutil
+from routers.auth import get_admin_user
 import os
+import sqlite3
 from datetime import datetime
 from apscheduler.schedulers.background import BackgroundScheduler
 
@@ -19,7 +20,15 @@ def hacer_backup():
 
     fecha = datetime.now().strftime('%Y-%m-%d_%H-%M')
     backup_path = os.path.join(backup_dir, f'artesania_backup_{fecha}.db')
-    shutil.copy2(db_path, backup_path)
+
+    # Copia segura con la API de SQLite (válida aunque se esté escribiendo)
+    origen = sqlite3.connect(db_path)
+    destino = sqlite3.connect(backup_path)
+    try:
+        origen.backup(destino)
+    finally:
+        destino.close()
+        origen.close()
     print(f"✅ Backup realizado: {backup_path}")
 
     # Mantener solo los últimos 7 backups
@@ -28,7 +37,7 @@ def hacer_backup():
     ])
     while len(backups) > 7:
         os.remove(os.path.join(backup_dir, backups.pop(0)))
-        print(f"🗑️  Backup antiguo eliminado")
+        print("🗑️  Backup antiguo eliminado")
 
 # Programar backup diario a medianoche
 scheduler = BackgroundScheduler()
@@ -68,14 +77,14 @@ app.include_router(imagenes.router, prefix="/imagenes", tags=["Imágenes"])
 def root():
     return {"mensaje": "Bienvenido a la API de Artesanía Albaicín"}
 
-# Ruta para hacer backup manual
+# Ruta para hacer backup manual (solo admin)
 @app.post("/backup")
-def backup_manual():
+def backup_manual(current_user: models.Usuario = Depends(get_admin_user)):
     try:
         hacer_backup()
         return {"mensaje": "Backup realizado correctamente"}
-    except Exception as e:
-        return {"error": str(e)}
+    except Exception:
+        raise HTTPException(status_code=500, detail="No se pudo realizar el backup")
 
 # Arrancar el servidor
 if __name__ == "__main__":
