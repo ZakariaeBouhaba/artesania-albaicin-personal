@@ -1,26 +1,33 @@
+import logging
+import os
+from typing import List
+
 from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File
 from sqlalchemy.orm import Session
-from typing import List
-from database import get_db
+
 import models
 import schemas
-import cloudinary
-import cloudinary.uploader
+from cloudinary_utils import subir_imagen, borrar_imagen, public_id_desde_url
+from database import get_db
 from routers.auth import get_admin_user
-from config import settings
 
+logger = logging.getLogger(__name__)
 router = APIRouter()
 
-# Configuración de Cloudinary desde .env
-cloudinary.config(
-    cloud_name=settings.CLOUDINARY_CLOUD_NAME,
-    api_key=settings.CLOUDINARY_API_KEY,
-    api_secret=settings.CLOUDINARY_API_SECRET
-)
+TIPOS_PERMITIDOS = ["image/jpeg", "image/png", "image/webp"]
+TAMANO_MAXIMO = 5 * 1024 * 1024  # 5 MB
+
+
+def _tamano_bytes(archivo: UploadFile) -> int:
+    archivo.file.seek(0, os.SEEK_END)
+    tamano = archivo.file.tell()
+    archivo.file.seek(0)
+    return tamano
+
 
 # ─── SUBIR IMAGEN DE PRODUCTO (solo admin) ───
 @router.post("/{producto_id}", response_model=schemas.ImagenProductoResponse)
-def subir_imagen(
+def subir_imagen_producto(
     producto_id: int,
     file: UploadFile = File(...),
     db: Session = Depends(get_db),
@@ -35,21 +42,31 @@ def subir_imagen(
             detail="Producto no encontrado"
         )
 
-    if file.content_type not in ["image/jpeg", "image/png", "image/webp"]:
+    if file.content_type not in TIPOS_PERMITIDOS:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Solo se permiten imágenes JPG, PNG o WEBP"
         )
 
-    resultado = cloudinary.uploader.upload(
-        file.file,
-        folder="artesania_albaicin",
-        public_id=f"producto_{producto_id}_{file.filename}"
-    )
+    if _tamano_bytes(file) > TAMANO_MAXIMO:
+        raise HTTPException(
+            status_code=413,
+            detail="La imagen no puede superar los 5 MB"
+        )
+
+    try:
+        resultado = subir_imagen(file.file, producto_id)
+    except Exception:
+        logger.exception("Error al subir la imagen a Cloudinary")
+        raise HTTPException(
+            status_code=502,
+            detail="No se pudo subir la imagen"
+        )
 
     nueva_imagen = models.ImagenProducto(
         producto_id=producto_id,
-        imagen_url=resultado["secure_url"]
+        imagen_url=resultado["secure_url"],
+        public_id=resultado["public_id"]
     )
     db.add(nueva_imagen)
 
@@ -59,6 +76,7 @@ def subir_imagen(
     db.commit()
     db.refresh(nueva_imagen)
     return nueva_imagen
+
 
 # ─── OBTENER IMÁGENES DE UN PRODUCTO ───
 @router.get("/{producto_id}", response_model=List[schemas.ImagenProductoResponse])
@@ -78,6 +96,7 @@ def get_imagenes(
         models.ImagenProducto.producto_id == producto_id
     ).all()
 
+
 # ─── ELIMINAR IMAGEN (solo admin) ───
 @router.delete("/{imagen_id}")
 def delete_imagen(
@@ -94,9 +113,31 @@ def delete_imagen(
             detail="Imagen no encontrada"
         )
 
-    public_id = f"artesania_albaicin/producto_{imagen.producto_id}_{imagen.imagen_url.split('/')[-1].split('.')[0]}"
-    cloudinary.uploader.destroy(public_id)
+    url = imagen.imagen_url
+    producto_id = imagen.producto_id
+    public_id = imagen.public_id or public_id_desde_url(url)
+
+    try:
+        borrar_imagen(public_id)
+    except Exception:
+        logger.exception("No se pudo borrar %s de Cloudinary", public_id)
+        raise HTTPException(
+            status_code=502,
+            detail="No se pudo eliminar la imagen de Cloudinary"
+        )
 
     db.delete(imagen)
+    db.flush()
+
+    # Si era la imagen principal, usar otra del mismo producto (o ninguna)
+    producto = db.query(models.Producto).filter(
+        models.Producto.id == producto_id
+    ).first()
+    if producto and producto.imagen_url == url:
+        otra = db.query(models.ImagenProducto).filter(
+            models.ImagenProducto.producto_id == producto_id
+        ).first()
+        producto.imagen_url = otra.imagen_url if otra else None
+
     db.commit()
     return {"mensaje": "Imagen eliminada correctamente"}

@@ -42,6 +42,7 @@ class ImagenProducto(Base):
     id = Column(Integer, primary_key=True, index=True)
     producto_id = Column(Integer, ForeignKey("productos.id"))
     imagen_url = Column(String, nullable=False)
+    public_id = Column(String, nullable=True)
     producto = relationship("Producto", back_populates="imagenes")
 
 class Mensaje(Base):

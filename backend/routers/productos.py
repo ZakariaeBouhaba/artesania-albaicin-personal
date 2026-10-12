@@ -1,11 +1,16 @@
+import logging
+from typing import List, Optional
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from typing import List, Optional
-from database import get_db
+
 import models
 import schemas
+from cloudinary_utils import borrar_imagen, public_id_desde_url
+from database import get_db
 from routers.auth import get_current_user, get_admin_user
 
+logger = logging.getLogger(__name__)
 router = APIRouter()
 
 # ─── OBTENER TODOS LOS PRODUCTOS ───
@@ -120,9 +125,17 @@ def delete_producto(
             detail="Producto no encontrado"
         )
 
-    db.query(models.ImagenProducto).filter(
+    # Borrar también las fotos de Cloudinary (si falla, se registra y se continúa)
+    imagenes = db.query(models.ImagenProducto).filter(
         models.ImagenProducto.producto_id == producto_id
-    ).delete()
+    ).all()
+    for imagen in imagenes:
+        public_id = imagen.public_id or public_id_desde_url(imagen.imagen_url)
+        try:
+            borrar_imagen(public_id)
+        except Exception:
+            logger.exception("No se pudo borrar %s de Cloudinary", public_id)
+        db.delete(imagen)
 
     db.delete(producto)
     db.commit()
