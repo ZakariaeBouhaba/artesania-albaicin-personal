@@ -12,7 +12,7 @@ router = APIRouter()
 @router.get("/", response_model=List[schemas.ProductoResponse])
 def get_productos(
     categoria_id: Optional[int] = None,
-    estado: Optional[str] = None,
+    estado: Optional[schemas.EstadoProducto] = None,
     db: Session = Depends(get_db)
 ):
     query = db.query(models.Producto)
@@ -86,16 +86,10 @@ def update_producto(
 @router.patch("/{producto_id}/estado", response_model=schemas.ProductoResponse)
 def update_estado(
     producto_id: int,
-    estado: str,
+    estado: schemas.EstadoProducto,
     db: Session = Depends(get_db),
     current_user: models.Usuario = Depends(get_current_user)
 ):
-    if estado not in ["disponible", "agotado", "bajo_pedido"]:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Estado inválido. Debe ser: disponible, agotado o bajo_pedido"
-        )
-
     producto = db.query(models.Producto).filter(
         models.Producto.id == producto_id
     ).first()

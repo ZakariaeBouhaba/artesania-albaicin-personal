@@ -16,19 +16,14 @@ def create_venta(
     db: Session = Depends(get_db),
     current_user: models.Usuario = Depends(get_current_user)
 ):
-    total_final = venta.precio_original - venta.descuento
-
-    if total_final < 0:
+    # Precio, descuento y método de pago ya vienen validados por el esquema
+    if venta.descuento > venta.precio_original:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="El descuento no puede ser mayor que el precio original"
         )
 
-    if venta.metodo_pago not in ["TPV", "Efectivo"]:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Método de pago inválido. Debe ser TPV o Efectivo"
-        )
+    total_final = round(venta.precio_original - venta.descuento, 2)
 
     nueva_venta = models.Venta(
         descripcion=venta.descripcion,
@@ -46,7 +41,7 @@ def create_venta(
 # ─── OBTENER TODAS LAS VENTAS (encargado y admin) ───
 @router.get("/", response_model=List[schemas.VentaResponse])
 def get_ventas(
-    metodo_pago: Optional[str] = None,
+    metodo_pago: Optional[schemas.MetodoPago] = None,
     fecha_desde: Optional[date] = None,
     fecha_hasta: Optional[date] = None,
     db: Session = Depends(get_db),
