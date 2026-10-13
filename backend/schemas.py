@@ -3,7 +3,7 @@ from typing import Optional, List, Literal
 from datetime import datetime
 
 # ─── VALORES PERMITIDOS ───
-Rol = Literal["admin", "encargado"]
+Rol = Literal["admin", "encargado", "empleado"]
 EstadoProducto = Literal["disponible", "agotado", "bajo_pedido"]
 MetodoPago = Literal["TPV", "Efectivo"]
 
