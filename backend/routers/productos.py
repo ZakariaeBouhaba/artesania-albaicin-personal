@@ -8,7 +8,7 @@ import models
 import schemas
 from cloudinary_utils import borrar_imagen, public_id_desde_url
 from database import get_db
-from routers.auth import get_current_user, get_admin_user
+from routers.auth import get_current_user, get_manager_user
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -45,7 +45,7 @@ def get_producto(producto_id: int, db: Session = Depends(get_db)):
 def create_producto(
     producto: schemas.ProductoCreate,
     db: Session = Depends(get_db),
-    current_user: models.Usuario = Depends(get_admin_user)
+    current_user: models.Usuario = Depends(get_manager_user)
 ):
     categoria = db.query(models.Categoria).filter(
         models.Categoria.id == producto.categoria_id
@@ -68,7 +68,7 @@ def update_producto(
     producto_id: int,
     producto_update: schemas.ProductoUpdate,
     db: Session = Depends(get_db),
-    current_user: models.Usuario = Depends(get_admin_user)
+    current_user: models.Usuario = Depends(get_manager_user)
 ):
     producto = db.query(models.Producto).filter(
         models.Producto.id == producto_id
@@ -114,7 +114,7 @@ def update_estado(
 def delete_producto(
     producto_id: int,
     db: Session = Depends(get_db),
-    current_user: models.Usuario = Depends(get_admin_user)
+    current_user: models.Usuario = Depends(get_manager_user)
 ):
     producto = db.query(models.Producto).filter(
         models.Producto.id == producto_id

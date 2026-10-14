@@ -9,7 +9,7 @@ import models
 import schemas
 from cloudinary_utils import subir_imagen, borrar_imagen, public_id_desde_url
 from database import get_db
-from routers.auth import get_admin_user
+from routers.auth import get_manager_user
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -31,7 +31,7 @@ def subir_imagen_producto(
     producto_id: int,
     file: UploadFile = File(...),
     db: Session = Depends(get_db),
-    current_user: models.Usuario = Depends(get_admin_user)
+    current_user: models.Usuario = Depends(get_manager_user)
 ):
     producto = db.query(models.Producto).filter(
         models.Producto.id == producto_id
@@ -102,7 +102,7 @@ def get_imagenes(
 def delete_imagen(
     imagen_id: int,
     db: Session = Depends(get_db),
-    current_user: models.Usuario = Depends(get_admin_user)
+    current_user: models.Usuario = Depends(get_manager_user)
 ):
     imagen = db.query(models.ImagenProducto).filter(
         models.ImagenProducto.id == imagen_id

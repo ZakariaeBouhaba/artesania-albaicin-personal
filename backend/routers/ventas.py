@@ -5,7 +5,7 @@ from datetime import datetime, date
 from database import get_db
 import models
 import schemas
-from routers.auth import get_current_user, get_admin_user
+from routers.auth import get_current_user, get_manager_user
 
 router = APIRouter()
 
@@ -84,7 +84,7 @@ def get_venta(
 def delete_venta(
     venta_id: int,
     db: Session = Depends(get_db),
-    current_user: models.Usuario = Depends(get_admin_user)
+    current_user: models.Usuario = Depends(get_manager_user)
 ):
     venta = db.query(models.Venta).filter(
         models.Venta.id == venta_id

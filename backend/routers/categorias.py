@@ -4,7 +4,7 @@ from typing import List
 from database import get_db
 import models
 import schemas
-from routers.auth import get_admin_user
+from routers.auth import get_manager_user
 
 router = APIRouter()
 
@@ -31,7 +31,7 @@ def get_categoria(categoria_id: int, db: Session = Depends(get_db)):
 def create_categoria(
     categoria: schemas.CategoriaCreate,
     db: Session = Depends(get_db),
-    current_user: models.Usuario = Depends(get_admin_user)
+    current_user: models.Usuario = Depends(get_manager_user)
 ):
     existe = db.query(models.Categoria).filter(
         models.Categoria.nombre == categoria.nombre
@@ -54,7 +54,7 @@ def update_categoria(
     categoria_id: int,
     categoria_update: schemas.CategoriaCreate,
     db: Session = Depends(get_db),
-    current_user: models.Usuario = Depends(get_admin_user)
+    current_user: models.Usuario = Depends(get_manager_user)
 ):
     categoria = db.query(models.Categoria).filter(
         models.Categoria.id == categoria_id
@@ -78,7 +78,7 @@ def update_categoria(
 def delete_categoria(
     categoria_id: int,
     db: Session = Depends(get_db),
-    current_user: models.Usuario = Depends(get_admin_user)
+    current_user: models.Usuario = Depends(get_manager_user)
 ):
     categoria = db.query(models.Categoria).filter(
         models.Categoria.id == categoria_id

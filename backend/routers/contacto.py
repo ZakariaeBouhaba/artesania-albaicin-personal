@@ -4,7 +4,7 @@ from typing import List, Optional
 from database import get_db
 import models
 import schemas
-from routers.auth import get_admin_user
+from routers.auth import get_manager_user
 
 router = APIRouter()
 
@@ -25,7 +25,7 @@ def enviar_mensaje(
 def get_mensajes(
     leido: Optional[bool] = None,
     db: Session = Depends(get_db),
-    current_user: models.Usuario = Depends(get_admin_user)
+    current_user: models.Usuario = Depends(get_manager_user)
 ):
     query = db.query(models.Mensaje).order_by(models.Mensaje.fecha.desc())
     if leido is not None:
@@ -37,7 +37,7 @@ def get_mensajes(
 def get_mensaje(
     mensaje_id: int,
     db: Session = Depends(get_db),
-    current_user: models.Usuario = Depends(get_admin_user)
+    current_user: models.Usuario = Depends(get_manager_user)
 ):
     mensaje = db.query(models.Mensaje).filter(
         models.Mensaje.id == mensaje_id
@@ -54,7 +54,7 @@ def get_mensaje(
 def marcar_leido(
     mensaje_id: int,
     db: Session = Depends(get_db),
-    current_user: models.Usuario = Depends(get_admin_user)
+    current_user: models.Usuario = Depends(get_manager_user)
 ):
     mensaje = db.query(models.Mensaje).filter(
         models.Mensaje.id == mensaje_id
@@ -74,7 +74,7 @@ def marcar_leido(
 def delete_mensaje(
     mensaje_id: int,
     db: Session = Depends(get_db),
-    current_user: models.Usuario = Depends(get_admin_user)
+    current_user: models.Usuario = Depends(get_manager_user)
 ):
     mensaje = db.query(models.Mensaje).filter(
         models.Mensaje.id == mensaje_id
