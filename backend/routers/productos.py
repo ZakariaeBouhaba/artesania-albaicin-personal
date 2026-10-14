@@ -40,7 +40,7 @@ def get_producto(producto_id: int, db: Session = Depends(get_db)):
         )
     return producto
 
-# ─── CREAR PRODUCTO (solo admin) ───
+# ─── CREAR PRODUCTO (admin y encargado) ───
 @router.post("/", response_model=schemas.ProductoResponse)
 def create_producto(
     producto: schemas.ProductoCreate,
@@ -62,7 +62,7 @@ def create_producto(
     db.refresh(nuevo_producto)
     return nuevo_producto
 
-# ─── ACTUALIZAR PRODUCTO (solo admin) ───
+# ─── ACTUALIZAR PRODUCTO (admin y encargado) ───
 @router.put("/{producto_id}", response_model=schemas.ProductoResponse)
 def update_producto(
     producto_id: int,
@@ -87,7 +87,7 @@ def update_producto(
     db.refresh(producto)
     return producto
 
-# ─── ACTUALIZAR ESTADO (encargado y admin) ───
+# ─── ACTUALIZAR ESTADO (cualquier usuario con sesión) ───
 @router.patch("/{producto_id}/estado", response_model=schemas.ProductoResponse)
 def update_estado(
     producto_id: int,
@@ -109,7 +109,7 @@ def update_estado(
     db.refresh(producto)
     return producto
 
-# ─── ELIMINAR PRODUCTO (solo admin) ───
+# ─── ELIMINAR PRODUCTO (admin y encargado) ───
 @router.delete("/{producto_id}")
 def delete_producto(
     producto_id: int,

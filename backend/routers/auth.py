@@ -96,3 +96,10 @@ def crear_usuario(
     db.commit()
     db.refresh(nuevo_usuario)
     return nuevo_usuario
+def get_manager_user(current_user: models.Usuario = Depends(get_current_user)):
+    if current_user.rol not in ("admin", "encargado"):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="No tienes permisos para realizar esta acción"
+        )
+    return current_user

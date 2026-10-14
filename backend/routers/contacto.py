@@ -20,7 +20,7 @@ def enviar_mensaje(
     db.refresh(nuevo_mensaje)
     return nuevo_mensaje
 
-# ─── OBTENER TODOS LOS MENSAJES (solo admin) ───
+# ─── OBTENER TODOS LOS MENSAJES (admin y encargado) ───
 @router.get("/", response_model=List[schemas.MensajeResponse])
 def get_mensajes(
     leido: Optional[bool] = None,
@@ -32,7 +32,7 @@ def get_mensajes(
         query = query.filter(models.Mensaje.leido == leido)
     return query.all()
 
-# ─── OBTENER UN MENSAJE (solo admin) ───
+# ─── OBTENER UN MENSAJE (admin y encargado) ───
 @router.get("/{mensaje_id}", response_model=schemas.MensajeResponse)
 def get_mensaje(
     mensaje_id: int,
@@ -49,7 +49,7 @@ def get_mensaje(
         )
     return mensaje
 
-# ─── MARCAR COMO LEÍDO (solo admin) ───
+# ─── MARCAR COMO LEÍDO (admin y encargado) ───
 @router.patch("/{mensaje_id}/leido", response_model=schemas.MensajeResponse)
 def marcar_leido(
     mensaje_id: int,
@@ -69,7 +69,7 @@ def marcar_leido(
     db.refresh(mensaje)
     return mensaje
 
-# ─── ELIMINAR MENSAJE (solo admin) ───
+# ─── ELIMINAR MENSAJE (admin y encargado) ───
 @router.delete("/{mensaje_id}")
 def delete_mensaje(
     mensaje_id: int,

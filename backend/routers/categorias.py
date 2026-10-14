@@ -26,7 +26,7 @@ def get_categoria(categoria_id: int, db: Session = Depends(get_db)):
         )
     return categoria
 
-# ─── CREAR CATEGORÍA (solo admin) ───
+# ─── CREAR CATEGORÍA (admin y encargado) ───
 @router.post("/", response_model=schemas.CategoriaResponse)
 def create_categoria(
     categoria: schemas.CategoriaCreate,
@@ -48,7 +48,7 @@ def create_categoria(
     db.refresh(nueva_categoria)
     return nueva_categoria
 
-# ─── ACTUALIZAR CATEGORÍA (solo admin) ───
+# ─── ACTUALIZAR CATEGORÍA (admin y encargado) ───
 @router.put("/{categoria_id}", response_model=schemas.CategoriaResponse)
 def update_categoria(
     categoria_id: int,
@@ -73,7 +73,7 @@ def update_categoria(
     db.refresh(categoria)
     return categoria
 
-# ─── ELIMINAR CATEGORÍA (solo admin) ───
+# ─── ELIMINAR CATEGORÍA (admin y encargado) ───
 @router.delete("/{categoria_id}")
 def delete_categoria(
     categoria_id: int,

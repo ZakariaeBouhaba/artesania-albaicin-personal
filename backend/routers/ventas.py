@@ -9,7 +9,7 @@ from routers.auth import get_current_user, get_admin_user
 
 router = APIRouter()
 
-# ─── REGISTRAR VENTA (encargado y admin) ───
+# ─── REGISTRAR VENTA (cualquier usuario con sesión) ───
 @router.post("/", response_model=schemas.VentaResponse)
 def create_venta(
     venta: schemas.VentaCreate,
@@ -38,7 +38,7 @@ def create_venta(
     db.refresh(nueva_venta)
     return nueva_venta
 
-# ─── OBTENER TODAS LAS VENTAS (encargado y admin) ───
+# ─── OBTENER TODAS LAS VENTAS (cualquier usuario con sesión) ───
 @router.get("/", response_model=List[schemas.VentaResponse])
 def get_ventas(
     metodo_pago: Optional[schemas.MetodoPago] = None,
@@ -62,7 +62,7 @@ def get_ventas(
 
     return query.all()
 
-# ─── OBTENER UNA VENTA (encargado y admin) ───
+# ─── OBTENER UNA VENTA (cualquier usuario con sesión) ───
 @router.get("/{venta_id}", response_model=schemas.VentaResponse)
 def get_venta(
     venta_id: int,
@@ -79,7 +79,7 @@ def get_venta(
         )
     return venta
 
-# ─── ELIMINAR VENTA (solo admin) ───
+# ─── ELIMINAR VENTA (admin y encargado) ───
 @router.delete("/{venta_id}")
 def delete_venta(
     venta_id: int,

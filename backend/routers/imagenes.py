@@ -25,7 +25,7 @@ def _tamano_bytes(archivo: UploadFile) -> int:
     return tamano
 
 
-# ─── SUBIR IMAGEN DE PRODUCTO (solo admin) ───
+# ─── SUBIR IMAGEN DE PRODUCTO (admin y encargado) ───
 @router.post("/{producto_id}", response_model=schemas.ImagenProductoResponse)
 def subir_imagen_producto(
     producto_id: int,
@@ -97,7 +97,7 @@ def get_imagenes(
     ).all()
 
 
-# ─── ELIMINAR IMAGEN (solo admin) ───
+# ─── ELIMINAR IMAGEN (admin y encargado) ───
 @router.delete("/{imagen_id}")
 def delete_imagen(
     imagen_id: int,
