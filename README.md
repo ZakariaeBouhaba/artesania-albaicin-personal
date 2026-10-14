@@ -24,7 +24,7 @@ SCREENSHOTS (uncomment when you have the images in docs/screenshots/)
 - Animations (AOS), SEO metadata and responsive layout.
 
 **Admin panel**
-- Login with role-based access (`admin` and `encargado`).
+- Login with role-based access (`admin`, `encargado` and `empleado`).
 - Product, category and image management (images stored in Cloudinary).
 - Daily sales register with payment method (card/cash) and discounts.
 - Dashboard with sales charts and counters (unread messages, sold-out products).
@@ -125,19 +125,19 @@ npm run dev
 
 ## Roles and permissions
 
-There are two roles: `admin` and `encargado` (shop manager).
+There are three roles: `admin`, `encargado` (shop manager) and `empleado` (shop assistant).
 
-| Action | Public | Encargado | Admin |
-|---|:-:|:-:|:-:|
-| View products, categories and images | ✅ | ✅ | ✅ |
-| Send a contact message | ✅ | ✅ | ✅ |
-| Register, list and view sales | ❌ | ✅ | ✅ |
-| View statistics | ❌ | ✅ | ✅ |
-| Change a product's status | ❌ | ✅ | ✅ |
-| Create / edit / delete products, categories and images | ❌ | ❌ | ✅ |
-| Delete sales | ❌ | ❌ | ✅ |
-| Read, mark and delete contact messages | ❌ | ❌ | ✅ |
-| Create users and trigger manual backups | ❌ | ❌ | ✅ |
+| Action | Public | Empleado | Encargado | Admin |
+|---|:-:|:-:|:-:|:-:|
+| View products, categories and images | ✅ | ✅ | ✅ | ✅ |
+| Send a contact message | ✅ | ✅ | ✅ | ✅ |
+| Register, list and view sales | ❌ | ✅ | ✅ | ✅ |
+| View statistics | ❌ | ✅ | ✅ | ✅ |
+| Change a product's status | ❌ | ✅ | ✅ | ✅ |
+| Create / edit / delete products, categories and images | ❌ | ❌ | ✅ | ✅ |
+| Delete sales | ❌ | ❌ | ✅ | ✅ |
+| Read, mark and delete contact messages | ❌ | ❌ | ✅ | ✅ |
+| Create users and trigger manual backups | ❌ | ❌ | ❌ | ✅ |
 
 ## API endpoints
 
@@ -148,17 +148,17 @@ Full interactive documentation is available at `/docs`.
 | Auth | `POST /auth/login` | Public |
 | | `POST /auth/crear-usuario` | Admin |
 | Products | `GET /productos/`, `GET /productos/{id}` | Public |
-| | `PATCH /productos/{id}/estado` | Encargado, Admin |
-| | `POST /productos/`, `PUT /productos/{id}`, `DELETE /productos/{id}` | Admin |
+| | `PATCH /productos/{id}/estado` | Any logged-in user |
+| | `POST /productos/`, `PUT /productos/{id}`, `DELETE /productos/{id}` | Encargado, Admin |
 | Categories | `GET /categorias/`, `GET /categorias/{id}` | Public |
-| | `POST`, `PUT`, `DELETE` | Admin |
+| | `POST`, `PUT`, `DELETE` | Encargado, Admin |
 | Images | `GET /imagenes/{producto_id}` | Public |
-| | `POST /imagenes/{producto_id}`, `DELETE /imagenes/{imagen_id}` | Admin |
-| Sales | `GET /ventas/`, `GET /ventas/{id}`, `POST /ventas/` | Encargado, Admin |
-| | `DELETE /ventas/{id}` | Admin |
+| | `POST /imagenes/{producto_id}`, `DELETE /imagenes/{imagen_id}` | Encargado, Admin |
+| Sales | `GET /ventas/`, `GET /ventas/{id}`, `POST /ventas/` | Any logged-in user |
+| | `DELETE /ventas/{id}` | Encargado, Admin |
 | Contact | `POST /contacto/` | Public |
-| | `GET /contacto/`, `GET /contacto/{id}`, `PATCH /contacto/{id}/leido`, `DELETE /contacto/{id}` | Admin |
-| Statistics | `GET /estadisticas/` | Encargado, Admin |
+| | `GET /contacto/`, `GET /contacto/{id}`, `PATCH /contacto/{id}/leido`, `DELETE /contacto/{id}` | Encargado, Admin |
+| Statistics | `GET /estadisticas/` | Any logged-in user |
 | Backup | `POST /backup` | Admin |
 
 ## Database

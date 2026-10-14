@@ -24,7 +24,7 @@ CAPTURAS (descomenta cuando tengas las imágenes en docs/screenshots/)
 - Animaciones (AOS), metadatos SEO y diseño adaptable a móvil.
 
 **Panel de administración**
-- Inicio de sesión con acceso por roles (`admin` y `encargado`).
+- Inicio de sesión con acceso por roles (`admin`, `encargado` y `empleado`).
 - Gestión de productos, categorías e imágenes (almacenadas en Cloudinary).
 - Registro diario de ventas con método de pago (tarjeta/efectivo) y descuentos.
 - Dashboard con gráficos de ventas y contadores (mensajes sin leer, productos agotados).
@@ -125,19 +125,19 @@ npm run dev
 
 ## Roles y permisos
 
-Hay dos roles: `admin` y `encargado`.
+Hay tres roles: `admin`, `encargado` y `empleado`.
 
-| Acción | Público | Encargado | Admin |
-|---|:-:|:-:|:-:|
-| Ver productos, categorías e imágenes | ✅ | ✅ | ✅ |
-| Enviar un mensaje de contacto | ✅ | ✅ | ✅ |
-| Registrar, listar y ver ventas | ❌ | ✅ | ✅ |
-| Ver estadísticas | ❌ | ✅ | ✅ |
-| Cambiar el estado de un producto | ❌ | ✅ | ✅ |
-| Crear / editar / eliminar productos, categorías e imágenes | ❌ | ❌ | ✅ |
-| Eliminar ventas | ❌ | ❌ | ✅ |
-| Leer, marcar y borrar mensajes de contacto | ❌ | ❌ | ✅ |
-| Crear usuarios y lanzar copias de seguridad manuales | ❌ | ❌ | ✅ |
+| Acción | Público | Empleado | Encargado | Admin |
+|---|:-:|:-:|:-:|:-:|
+| Ver productos, categorías e imágenes | ✅ | ✅ | ✅ | ✅ |
+| Enviar un mensaje de contacto | ✅ | ✅ | ✅ | ✅ |
+| Registrar, listar y ver ventas | ❌ | ✅ | ✅ | ✅ |
+| Ver estadísticas | ❌ | ✅ | ✅ | ✅ |
+| Cambiar el estado de un producto | ❌ | ✅ | ✅ | ✅ |
+| Crear / editar / eliminar productos, categorías e imágenes | ❌ | ❌ | ✅ | ✅ |
+| Eliminar ventas | ❌ | ❌ | ✅ | ✅ |
+| Leer, marcar y borrar mensajes de contacto | ❌ | ❌ | ✅ | ✅ |
+| Crear usuarios y lanzar copias de seguridad manuales | ❌ | ❌ | ❌ | ✅ |
 
 ## Endpoints de la API
 
@@ -148,17 +148,17 @@ La documentación interactiva completa está en `/docs`.
 | Autenticación | `POST /auth/login` | Público |
 | | `POST /auth/crear-usuario` | Admin |
 | Productos | `GET /productos/`, `GET /productos/{id}` | Público |
-| | `PATCH /productos/{id}/estado` | Encargado, Admin |
-| | `POST /productos/`, `PUT /productos/{id}`, `DELETE /productos/{id}` | Admin |
+| | `PATCH /productos/{id}/estado` | Cualquier usuario con sesión |
+| | `POST /productos/`, `PUT /productos/{id}`, `DELETE /productos/{id}` | Encargado, Admin |
 | Categorías | `GET /categorias/`, `GET /categorias/{id}` | Público |
-| | `POST`, `PUT`, `DELETE` | Admin |
+| | `POST`, `PUT`, `DELETE` | Encargado, Admin |
 | Imágenes | `GET /imagenes/{producto_id}` | Público |
-| | `POST /imagenes/{producto_id}`, `DELETE /imagenes/{imagen_id}` | Admin |
-| Ventas | `GET /ventas/`, `GET /ventas/{id}`, `POST /ventas/` | Encargado, Admin |
-| | `DELETE /ventas/{id}` | Admin |
+| | `POST /imagenes/{producto_id}`, `DELETE /imagenes/{imagen_id}` | Encargado, Admin |
+| Ventas | `GET /ventas/`, `GET /ventas/{id}`, `POST /ventas/` | Cualquier usuario con sesión |
+| | `DELETE /ventas/{id}` | Encargado, Admin |
 | Contacto | `POST /contacto/` | Público |
-| | `GET /contacto/`, `GET /contacto/{id}`, `PATCH /contacto/{id}/leido`, `DELETE /contacto/{id}` | Admin |
-| Estadísticas | `GET /estadisticas/` | Encargado, Admin |
+| | `GET /contacto/`, `GET /contacto/{id}`, `PATCH /contacto/{id}/leido`, `DELETE /contacto/{id}` | Encargado, Admin |
+| Estadísticas | `GET /estadisticas/` | Cualquier usuario con sesión |
 | Backup | `POST /backup` | Admin |
 
 ## Base de datos
