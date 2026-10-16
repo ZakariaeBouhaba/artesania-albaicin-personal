@@ -6,22 +6,22 @@ Full-stack application for a handicraft shop in the Albaicín district of Granad
 
 > **Status:** working project, not deployed yet. See the [Roadmap](#roadmap).
 
-<!--
-SCREENSHOTS (uncomment when you have the images in docs/screenshots/)
-
 ## Screenshots
 
-| Public website | Admin dashboard |
-|---|---|
-| ![Home](docs/screenshots/home.png) | ![Dashboard](docs/screenshots/dashboard.png) |
--->
+| Public website | Shop categories |
+|:-:|:-:|
+| <img src="docs/screenshots/web-portada.jpg" width="480" alt="Home page of the public website"> | <img src="docs/screenshots/web-categorias.jpg" width="480" alt="Shop categories on the public website"> |
+
+| Admin dashboard | Product management |
+|:-:|:-:|
+| <img src="docs/screenshots/panel-dashboard.jpg" width="480" alt="Admin dashboard with sales and payment methods"> | <img src="docs/screenshots/panel-productos.jpg" width="480" alt="Product list in the admin panel"> |
 
 ## Features
 
 **Public website**
 - Product catalogue filtered by category, with product detail pages.
 - Contact form that stores messages in the database.
-- Animations (AOS), SEO metadata and responsive layout.
+- Available in Spanish, English and French, with animations (AOS), SEO metadata and a responsive layout.
 
 **Admin panel**
 - Login with role-based access (`admin`, `encargado` and `empleado`).
@@ -172,7 +172,11 @@ SQLite with SQLAlchemy. Tables: `usuarios`, `categorias`, `productos`, `imagenes
 > **Upgrading an older database:** the `imagenes_productos` table now has a `public_id` column. If you already have a database, add it with
 > `sqlite3 artesania.db "ALTER TABLE imagenes_productos ADD COLUMN public_id VARCHAR;"`
 
-## Technical decisions
+## About the development
+
+This project was developed with AI assistance (Claude). My part was testing the API, reviewing and fixing problems (dependencies, permissions, data validation and image handling), writing the documentation and setting up the repository, while learning how each part works.
+
+## Design overview
 
 - **Three separate apps** instead of one: the public site and the admin panel have different users, different bundles and can be deployed independently.
 - **Dependency-based authorisation** (`Depends(get_admin_user)`) so every route declares its required role in its signature.

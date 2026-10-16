@@ -6,22 +6,22 @@ Aplicación full stack para una tienda de artesanía del Albaicín (Granada). Ti
 
 > **Estado:** proyecto funcional, aún sin desplegar. Consulta la [hoja de ruta](#hoja-de-ruta).
 
-<!--
-CAPTURAS (descomenta cuando tengas las imágenes en docs/screenshots/)
-
 ## Capturas
 
-| Web pública | Dashboard del panel |
-|---|---|
-| ![Inicio](docs/screenshots/home.png) | ![Dashboard](docs/screenshots/dashboard.png) |
--->
+| Web pública | Categorías de la tienda |
+|:-:|:-:|
+| <img src="docs/screenshots/web-portada.jpg" width="480" alt="Portada de la web pública"> | <img src="docs/screenshots/web-categorias.jpg" width="480" alt="Categorías de la tienda en la web pública"> |
+
+| Dashboard del panel | Gestión de productos |
+|:-:|:-:|
+| <img src="docs/screenshots/panel-dashboard.jpg" width="480" alt="Dashboard del panel con ventas y métodos de pago"> | <img src="docs/screenshots/panel-productos.jpg" width="480" alt="Listado de productos del panel de administración"> |
 
 ## Funcionalidades
 
 **Web pública**
 - Catálogo de productos filtrable por categoría, con página de detalle.
 - Formulario de contacto que guarda los mensajes en la base de datos.
-- Animaciones (AOS), metadatos SEO y diseño adaptable a móvil.
+- Disponible en español, inglés y francés, con animaciones (AOS), metadatos SEO y diseño adaptable a móvil.
 
 **Panel de administración**
 - Inicio de sesión con acceso por roles (`admin`, `encargado` y `empleado`).
@@ -172,7 +172,11 @@ SQLite con SQLAlchemy. Tablas: `usuarios`, `categorias`, `productos`, `imagenes_
 > **Actualizar una base de datos antigua:** la tabla `imagenes_productos` tiene ahora una columna `public_id`. Si ya tienes una base de datos, añádela con
 > `sqlite3 artesania.db "ALTER TABLE imagenes_productos ADD COLUMN public_id VARCHAR;"`
 
-## Decisiones técnicas
+## Sobre el desarrollo
+
+Este proyecto se desarrolló con asistencia de IA (Claude). Mi parte fue probar la API, revisar y corregir problemas (dependencias, permisos, validación de datos y gestión de imágenes), escribir la documentación y preparar el repositorio, mientras aprendía cómo funciona cada parte.
+
+## Visión general del diseño
 
 - **Tres aplicaciones separadas** en lugar de una: la web pública y el panel tienen usuarios y paquetes distintos y pueden desplegarse de forma independiente.
 - **Autorización mediante dependencias** (`Depends(get_admin_user)`), de modo que cada ruta declara en su firma el rol que necesita.
